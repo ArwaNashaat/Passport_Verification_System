@@ -1,6 +1,7 @@
 package org.hyperledger.fabric.samples.airport;
 
-import java.time.LocalDate;
+
+import java.util.Date;
 import java.util.Objects;
 
 import org.hyperledger.fabric.contract.annotation.DataType;
@@ -27,9 +28,9 @@ public final class ID {
     @Property()
     private final String nationality;
     @Property()
-    private final LocalDate dateOfBirth;
+    private final String dateOfBirth;
     @Property()
-    private final LocalDate expireDate;
+    private final String expireDate;
 
     public ID(@JsonProperty("IDNumber") final String IDNumber, @JsonProperty("address") final String address,
               @JsonProperty("fullName") final String fullName,
@@ -38,8 +39,8 @@ public final class ID {
               @JsonProperty("job") final String job,
               @JsonProperty("maritalStatus") final String maritalStatus,
               @JsonProperty("nationality") final String nationality,
-              @JsonProperty("dateOfBirth") final LocalDate dateOfBirth,
-              @JsonProperty("expireDate") final LocalDate expireDate)
+              @JsonProperty("dateOfBirth") final String dateOfBirth,
+              @JsonProperty("expireDate") final String expireDate)
     {
         this.IDNumber = IDNumber;
         this.address = address;
@@ -61,8 +62,8 @@ public final class ID {
     public String getJob(){ return job;}
     public String getMaritalStatus(){ return maritalStatus;}
     public String getNationality(){ return nationality;}
-    public LocalDate getDateOfBirth(){ return dateOfBirth;}
-    public LocalDate getExpireDate(){ return expireDate;}
+    public String getDateOfBirth(){ return dateOfBirth;}
+    public String getExpireDate(){ return expireDate;}
 
     @Override
     public boolean equals(final Object obj) {
