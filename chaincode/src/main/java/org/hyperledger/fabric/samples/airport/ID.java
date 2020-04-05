@@ -31,6 +31,8 @@ public final class ID {
     private final String dateOfBirth;
     @Property()
     private final String expireDate;
+    @Property()
+    private final boolean isExpired;
 
     public ID(@JsonProperty("IDNumber") final String IDNumber, @JsonProperty("address") final String address,
               @JsonProperty("fullName") final String fullName,
@@ -40,7 +42,8 @@ public final class ID {
               @JsonProperty("maritalStatus") final String maritalStatus,
               @JsonProperty("nationality") final String nationality,
               @JsonProperty("dateOfBirth") final String dateOfBirth,
-              @JsonProperty("expireDate") final String expireDate)
+              @JsonProperty("expireDate") final String expireDate,
+              @JsonProperty("isExpired") final boolean isExpired)
     {
         this.IDNumber = IDNumber;
         this.address = address;
@@ -52,6 +55,7 @@ public final class ID {
         this.nationality = nationality;
         this.dateOfBirth = dateOfBirth;
         this.expireDate = expireDate;
+        this.isExpired = isExpired;
     }
 
     public String getIDNumber(){ return IDNumber;}
@@ -64,6 +68,7 @@ public final class ID {
     public String getNationality(){ return nationality;}
     public String getDateOfBirth(){ return dateOfBirth;}
     public String getExpireDate(){ return expireDate;}
+    public boolean getIsExpired(){ return isExpired;}
 
     @Override
     public boolean equals(final Object obj) {
@@ -79,17 +84,18 @@ public final class ID {
 
         return Objects.deepEquals(new String[] {getIDNumber(), getAddress(), getFullName(), getGender(),
                          getReligion(), getJob(),getMaritalStatus(), getNationality(), String.valueOf(getDateOfBirth()),
-                String.valueOf(getExpireDate())},
+                String.valueOf(getExpireDate()), String.valueOf(getIsExpired())},
                 new String[] {other.getIDNumber(), other.getAddress(), other.getFullName(), other.getGender(),
               	other.getReligion(), other.getJob(), other.getMaritalStatus(), other.getNationality(),
-                        String.valueOf(other.getDateOfBirth()), String.valueOf(other.getExpireDate())});
+                        String.valueOf(other.getDateOfBirth()), String.valueOf(other.getExpireDate()),
+                        String.valueOf(other.getIsExpired())});
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getIDNumber(), getAddress(), getFullName(), getGender(),
                  getReligion(), getJob(), getMaritalStatus(), getNationality(), getDateOfBirth(),
-                getExpireDate());
+                getExpireDate(),getIsExpired());
     }
 
     @Override
@@ -97,6 +103,6 @@ public final class ID {
         return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [IDNumber=" + IDNumber + ", address="
                 + address + ", fullName=" + fullName + ", gender=" + gender  + ", religion=" + religion +
                 ", job=" + job + ", maritalStatus=" + maritalStatus + ", nationality=" + nationality +
-                ", dateOfBirth="+dateOfBirth + ", expireDate=" + expireDate + "]";
+                ", dateOfBirth="+dateOfBirth + ", expireDate=" + expireDate + ", ID Expired=" + isExpired +"]";
     }
 }

@@ -129,6 +129,14 @@ public class IDContractChainCode  implements ContractInterface {
         }
 
     }
+
+    private boolean isExpired(LocalDate expireDate){
+        LocalDate currentDate = LocalDate.now();
+        if(currentDate.isAfter(expireDate))
+            return true;
+        return false;
+    }
+
     /**
      * Creates a new ID on the ledger.
      *
@@ -155,18 +163,15 @@ public class IDContractChainCode  implements ContractInterface {
         checkIfIDExist(stub, IDState,IDNumber);
         checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         LocalDate expireDate = setExpireDate();
 
         ID id = new ID(IDNumber, address, fullName, gender, religion,
-                        job, maritalStatus, nationality, dateOfBirthString, String.valueOf(expireDate));
+                        job, maritalStatus, nationality, dateOfBirthString, String.valueOf(expireDate), false);
         IDState = genson.serialize(id);
         stub.putStringState(IDNumber, IDState);
 
         return id;
     }
-
 
 
     private void checkIDExist(String idState, String IDNumber){
@@ -177,6 +182,18 @@ public class IDContractChainCode  implements ContractInterface {
             throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
         }
     }
+
+    private void updateIfExpired(ChaincodeStub stub,ID id, boolean isExpired){
+
+        if(isExpired) {
+            ID newID = new ID(id.getIDNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
+                    id.getJob(), id.getMaritalStatus(), id.getNationality(), id.getDateOfBirth(), id.getExpireDate(), isExpired);
+            String newIDState = genson.serialize(newID);
+            stub.putStringState(id.getIDNumber(), newIDState);
+        }
+
+    }
+
     /**
      * Retrieves an ID with the specified ID Number from the ledger.
      *
@@ -190,14 +207,51 @@ public class IDContractChainCode  implements ContractInterface {
 
         String idState = stub.getStringState(IDNumber);
         checkIDExist(idState, IDNumber);
-        ID id = genson.deserialize(idState, ID.class);
 
-        //check if id is valid
-        checkIDNotExpired(id);
+        ID id = genson.deserialize(idState, ID.class);
+        boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));
+
+        updateIfExpired(stub,id, isExpired);
 
         return id;
 
     }
 
+    /**
+     * Renew an ID on the ledger.
+     *
+     * @param ctx the transaction context
+     * @param IDNumber the key for the new ID
+     * @param address the address of the new ID
+     * @param fullName the fullName of the ID's user
+     * @param religion the religion of the ID's user
+     * @param job the job of the ID's user
+     * @param maritalStatus the marital status of the ID's user
+     * @return the issued ID
+     */
 
+    @Transaction
+    public ID renewID(final Context ctx, final String IDNumber, final String address, final String fullName,
+                      final String religion, final String job, final String maritalStatus){
+
+        ChaincodeStub stub = ctx.getStub();
+
+        String idState = stub.getStringState(IDNumber);
+        checkIDExist(idState, IDNumber);
+
+        ID id = genson.deserialize(idState, ID.class);
+
+        String ed = String.valueOf(setExpireDate());
+
+        checkNewlyCreatedID(fullName, id.getGender(),religion, maritalStatus);
+
+        ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), religion,
+                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false);
+
+        String newIDState = genson.serialize(newID);
+        stub.putStringState(IDNumber, newIDState);
+
+        return newID;
+
+    }
 }

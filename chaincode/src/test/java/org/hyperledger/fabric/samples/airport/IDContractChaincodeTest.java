@@ -8,11 +8,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
+
 import java.util.*;
 
-import net.bytebuddy.asm.Advice;
-import net.bytebuddy.build.ToStringPlugin;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
@@ -64,22 +62,26 @@ public final class IDContractChaincodeTest {
             idList.add(new MockKeyValue("001",
                     "{\"IDNumber\":\"001\",\"address\":\"228N\",\"fullName\":\"Arwa Nashaat Serry abdelbar\"" +
                     ",\"gender\":\"Female\",\"religion\":\"Islam\",\"job\":\"Sw Eng\",\"maritalStatus\":\"Single\"" +
-                    ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1998-05-11\",\"expireDate\":\"2000-05-11\"}"));
+                    ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1998-05-11\",\"expireDate\":\"2000-05-11\"" +
+                    ",\"ID Expired\":\"true\"}"));
 
             idList.add(new MockKeyValue("002",
                     "{\"IDNumber\":\"002\",\"address\":\"288N\",\"fullName\":\"Amira Nashaat Serry abdelbar\"" +
                             ",\"gender\":\"Female\",\"religion\":\"Islam\",\"job\":\"Accountant\",\"maritalStatus\":\"Single\"" +
-                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1999-08-23\",\"expireDate\":\"2022-05-11\"}"));
+                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1999-08-23\",\"expireDate\":\"2022-05-11\"" +
+                    ",\"ID Expired\":\"false\"}"));
 
             idList.add(new MockKeyValue("003",
                     "{\"IDNumber\":\"003\",\"address\":\"298N\",\"fullName\":\"Nashaat Serry abdelbar abdelgawad\"" +
                             ",\"gender\":\"Male\",\"religion\":\"Islam\",\"job\":\"Accountant\",\"maritalStatus\":\"Married\"" +
-                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1964-12-21\",\"expireDate\":\"2022-05-11\"}"));
+                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1964-12-21\",\"expireDate\":\"2022-05-11\""+
+                            ",\"ID Expired\":\"false\"}"));
 
             idList.add(new MockKeyValue("004",
                     "{\"IDNumber\":\"004\",\"address\":\"288N\",\"fullName\":\"Amira Nashaat Serry abdelbar\"" +
                             ",\"gender\":\"Feale\",\"religion\":\"Islam\",\"job\":\"Accountant\",\"maritalStatus\":\"Single\"" +
-                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1999-08-23\",\"expireDate\":\"2022-05-11\"}"));
+                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1999-08-23\",\"expireDate\":\"2022-05-11\"" +
+                    ",\"ID Expired\":\"false\"}"));
         }
 
         @Override
@@ -128,7 +130,7 @@ public final class IDContractChaincodeTest {
 
             assertThat(id).isEqualTo(new ID("001", "228N", "Arwa Nashaat Serry abdelbar",
                     "Female","Islam","Sw Eng","Single","Egyption",
-                    "1998-05-11", "2027-04-03"));
+                    "1998-05-11", "2027-04-03", false));
         }
 
         @Test
@@ -193,11 +195,12 @@ public final class IDContractChaincodeTest {
             when(stub.getStringState("001"))
                     .thenReturn("{\"IDNumber\":\"001\",\"address\":\"228N\",\"fullName\":\"Arwa Nashaat Serry abdelbar\"" +
                             ",\"gender\":\"Female\",\"religion\":\"Islam\",\"job\":\"Sw Eng\",\"maritalStatus\":\"Single\"" +
-                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1998-05-11\",\"expireDate\":\"2000-05-11\"}");
+                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1998-05-11\",\"expireDate\":\"2000-05-11\""+
+                            ",\"ID Expired\":\"false\"}");
 
             Throwable thrown = catchThrowable(() -> {
                 contract.issueID(ctx, "001", "228N", "Arwa Nashaat Serry abdelbar",
-                "Female", "Islam", "Sw Eng", "Single", "Egytion",
+                "Female", "Islam", "Sw Eng", "Single", "Egyption",
                 "1998-05-11");
             });
 
@@ -242,43 +245,49 @@ public final class IDContractChaincodeTest {
                     "1991-10-01");
             assertThat(id).isEqualTo(new ID("005", "228N", "Aya Nashaat Serry abdelbar",
                     "Female", "Islam", "Teacher", "Married", "Egyption",
-                    "1991-10-01","2027-04-03"));
+                    "1991-10-01","2027-04-05", false));
         }
     }
 
 
-    /*@Nested
-    class ChangeCarOwnerTransaction {
+    @Nested
+    class renewIDTransaction {
 
         @Test
         public void whenCarExists() {
-            FabCar contract = new FabCar();
+            IDContractChainCode contract = new IDContractChainCode();
             Context ctx = mock(Context.class);
             ChaincodeStub stub = mock(ChaincodeStub.class);
             when(ctx.getStub()).thenReturn(stub);
-            when(stub.getStringState("CAR000"))
-                    .thenReturn("{\"color\":\"blue\",\"make\":\"Toyota\",\"model\":\"Prius\",\"owner\":\"Tomoko\"}");
+            when(stub.getStringState("001"))
+                    .thenReturn("{\"IDNumber\":\"001\",\"address\":\"228N\",\"fullName\":\"Arwa Nashaat Serry abdelbar\"" +
+                            ",\"gender\":\"Female\",\"religion\":\"Islam\",\"job\":\"Sw Eng\",\"maritalStatus\":\"Single\"" +
+                            ",\"nationality\":\"Egyption\",\"dateOfBirth\":\"1998-05-11\",\"expireDate\":\"2000-05-11\"}");
 
-            Car car = contract.changeCarOwner(ctx, "CAR000", "Dr Evil");
+            ID id = contract.renewID(ctx, "001", "227N", "Arwa Nashaat Serry AbdelBar",
+                    "Islam", "Software Engineer", "Single");
 
-            assertThat(car).isEqualTo(new Car("Toyota", "Prius", "blue", "Dr Evil"));
+            assertThat(id).isEqualTo(new ID("001", "227N", "Arwa Nashaat Serry AbdelBar",
+                    "Female", "Islam", "Software Engineer", "Single",
+                    "Egyption", "1998-05-11", "2027-04-05", false));
         }
 
         @Test
         public void whenCarDoesNotExist() {
-            FabCar contract = new FabCar();
+            IDContractChainCode contract = new IDContractChainCode();
             Context ctx = mock(Context.class);
             ChaincodeStub stub = mock(ChaincodeStub.class);
             when(ctx.getStub()).thenReturn(stub);
-            when(stub.getStringState("CAR000")).thenReturn("");
+            when(stub.getStringState("005")).thenReturn("");
 
             Throwable thrown = catchThrowable(() -> {
-                contract.changeCarOwner(ctx, "CAR000", "Dr Evil");
+                contract.renewID(ctx, "005", "335B", "Aya Nashat Serry AbdelBar", "Islam",
+                        "Teacher", "Married");
             });
 
             assertThat(thrown).isInstanceOf(ChaincodeException.class).hasNoCause()
-                    .hasMessage("Car CAR000 does not exist");
-            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("CAR_NOT_FOUND".getBytes());
+                    .hasMessage("ID 005 does not exist");
+            assertThat(((ChaincodeException) thrown).getPayload()).isEqualTo("ID_NOT_FOUND".getBytes());
         }
-    }*/
+    }
 }
