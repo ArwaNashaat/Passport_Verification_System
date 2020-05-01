@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$renewIDTransaction" tests="2" skipped="0" failures="0" errors="0" timestamp="2020-04-05T15:43:39" hostname="ubuntu" time="2.576">
+  <properties/>
+  <testcase name="whenCarExists()" classname="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$renewIDTransaction" time="2.555"/>
+  <testcase name="whenCarDoesNotExist()" classname="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$renewIDTransaction" time="0.02"/>
+  <system-out><![CDATA[ID 005 does not exist
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
