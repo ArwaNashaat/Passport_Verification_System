@@ -9,26 +9,31 @@ import { LoginServiceService } from '../services/login-service.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  Invalid =false;
-  ID:number
-  constructor(private router: Router, private LoginService: LoginServiceService  ) {
-    
+  Invalid = false;
+  ID: number
+  LoginGranted = false;
+  InvalidID = false;
+  StaticAlertClose = false
+  constructor(private router: Router, private LoginService: LoginServiceService) {
+
   }
 
 
   ngOnInit(): void {
   }
 
-  Login() {
+  async Login() {
     if (this.ID) {
-      this.LoginService.Login(this.ID)
-      setTimeout(() => {
+      const t = await this.LoginService.Login(this.ID)
+      if (t) {
         this.router.navigate(['Infopage/', this.ID])
         this.Invalid = false;
-      }, 14000);
-      
+      }
+      else{
+        this.InvalidID = true;
+      }
     }
-    else{
+    else {
       this.Invalid = true;
     }
   }
