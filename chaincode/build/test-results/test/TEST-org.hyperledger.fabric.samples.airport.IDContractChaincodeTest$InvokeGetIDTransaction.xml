@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$InvokeGetIDTransaction" tests="2" skipped="0" failures="0" errors="0" timestamp="2020-04-05T15:43:43" hostname="ubuntu" time="0.087">
-  <properties/>
-  <testcase name="whenIDExists()" classname="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$InvokeGetIDTransaction" time="0.051"/>
-  <testcase name="whenIDDoesNotExist()" classname="org.hyperledger.fabric.samples.airport.IDContractChaincodeTest$InvokeGetIDTransaction" time="0.016"/>
-  <system-out><![CDATA[ID 011 does not exist
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
