@@ -16,38 +16,16 @@ public class IDController {
     static {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
     }
-    @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping(path = "/Airport/getID/{ID}")
-    public boolean GetID(@PathVariable String ID) throws IOException {
-        Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
-        Wallet wallet = Wallet.createFileSystemWallet(walletPath);
-        String[] strings = {"5","l"};
-
-        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
-
-        Gateway.Builder builder = Gateway.createBuilder();
-        builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);
-        try (Gateway gateway = builder.connect()) {
-
-            Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("IDContract");
-            byte[] result;
-            result = contract.evaluateTransaction("getID",ID);
-            return true;
-        } catch (ContractException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
 
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping(path = "/Airport/getInfo/{ID}")
     public String GetInfo(@PathVariable String ID) throws IOException {
-        Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
-        Wallet wallet = Wallet.createFileSystemWallet(walletPath);
 
-        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
+        Path walletPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","wallets","Org1");
+        Wallet wallet = Wallet.createFileSystemWallet(walletPath);
+        // load a CCP
+
+        Path networkConfigPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","gateways","Org1","Org1.json");
 
         Gateway.Builder builder = Gateway.createBuilder();
         builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);
@@ -58,23 +36,23 @@ public class IDController {
             byte[] result;
 
             result = contract.evaluateTransaction("getID",ID);
-            System.out.println(new String(result));
             return new String(result);
         } catch (ContractException e) {
             e.printStackTrace();
         }
 
-        return "ID not found";
+        return "False";
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping(value="/Airport/IssueID", consumes= MediaType.APPLICATION_JSON_VALUE)
     public boolean IssueID(@RequestBody ID id) throws IOException {
 
-        Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
+        Path walletPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","wallets","Org1");
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
+        // load a CCP
 
-        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
+        Path networkConfigPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","gateways","Org1","Org1.json");
 
         Gateway.Builder builder = Gateway.createBuilder();
         builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);

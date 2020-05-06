@@ -186,10 +186,10 @@ public class IDContract implements ContractInterface {
     private void updateIfExpired(ChaincodeStub stub,ID id, boolean isExpired){
 
         if(isExpired) {
-            ID newID = new ID(id.getIDNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
+            ID newID = new ID(id.getNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
                     id.getJob(), id.getMaritalStatus(), id.getNationality(), id.getDateOfBirth(), id.getExpireDate(), isExpired);
             String newIDState = genson.serialize(newID);
-            stub.putStringState(id.getIDNumber(), newIDState);
+            stub.putStringState(id.getNumber(), newIDState);
         }
 
     }
@@ -245,7 +245,7 @@ public class IDContract implements ContractInterface {
 
         checkNewlyCreatedID(fullName, id.getGender(),religion, maritalStatus);
 
-        ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), religion,
+        ID newID = new ID(id.getNumber(), address, fullName, id.getGender(), religion,
                 job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false);
 
         String newIDState = genson.serialize(newID);

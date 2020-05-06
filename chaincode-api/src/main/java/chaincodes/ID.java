@@ -128,6 +128,23 @@ public class ID {
         this.personalPicture = personalPicture;
     }
 
+    public ID() {
+    }
+
+    public ID(String number, String address, String fullName, String gender, String religion, String job, String maritalStatus, String nationality, String dateOfBirth, String expireDate, boolean isExpired) {
+        this.number = number;
+        this.address = address;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.religion = religion;
+        this.job = job;
+        this.maritalStatus = maritalStatus;
+        this.nationality = nationality;
+        this.dateOfBirth = dateOfBirth;
+        this.expireDate = expireDate;
+        this.isExpired = isExpired;
+    }
+
     public ID(String number, String address, String fullName, String gender, String religion, String job,
               String maritalStatus, String nationality, String dateOfBirth, String expireDate,
               boolean isExpired, byte[] personalPicture) {
