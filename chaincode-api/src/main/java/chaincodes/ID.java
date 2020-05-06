@@ -12,6 +12,7 @@ public class ID {
     private  String dateOfBirth;
     private  String expireDate;
     private  boolean isExpired;
+    private  byte[] personalPicture;
 
     @Override
     public String toString() {
@@ -26,15 +27,16 @@ public class ID {
                 ", nationality='" + nationality + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", expireDate='" + expireDate + '\'' +
-                ", isExpired=" + isExpired +
+                ", isExpired=" + isExpired + '\'' +
+                ", personalPicture=" + personalPicture +
                 '}';
     }
 
-    public String getnumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setnumber(String number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
@@ -118,7 +120,9 @@ public class ID {
         isExpired = expired;
     }
 
-    public ID(String number, String address, String fullName, String gender, String religion, String job, String maritalStatus, String nationality, String dateOfBirth, String expireDate, boolean isExpired) {
+    public ID(String number, String address, String fullName, String gender, String religion, String job,
+              String maritalStatus, String nationality, String dateOfBirth, String expireDate,
+              boolean isExpired, byte[] personalPicture) {
         this.number = number;
         this.address = address;
         this.fullName = fullName;
@@ -130,6 +134,7 @@ public class ID {
         this.dateOfBirth = dateOfBirth;
         this.expireDate = expireDate;
         this.isExpired = isExpired;
+        this.personalPicture = personalPicture;
     }
 
 
