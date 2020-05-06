@@ -120,6 +120,14 @@ public class ID {
         isExpired = expired;
     }
 
+    public byte[] getPersonalPicture() {
+        return personalPicture;
+    }
+
+    public void setPersonalPicture(byte[] personalPicture) {
+        this.personalPicture = personalPicture;
+    }
+
     public ID(String number, String address, String fullName, String gender, String religion, String job,
               String maritalStatus, String nationality, String dateOfBirth, String expireDate,
               boolean isExpired, byte[] personalPicture) {
