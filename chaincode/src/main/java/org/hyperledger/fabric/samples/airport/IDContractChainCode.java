@@ -1,6 +1,7 @@
 package org.hyperledger.fabric.samples.airport;
 import com.owlike.genson.Genson;
 
+import org.hyperledger.fabric.samples.hospital.BirthCertificate;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contact;
@@ -9,16 +10,15 @@ import org.hyperledger.fabric.contract.annotation.Default;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.shim.Chaincode;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @Contract(
         name = "IDContract",
@@ -68,7 +68,7 @@ public class IDContractChainCode implements ContractInterface {
 
     }
 
-    private void checkGender(String gender){
+    private void checkGender(@NotNull String gender){
         if(!gender.equals("Female") && !gender.equals("Male")){
             String errorMessage = "Gender is not valid, please Enter Female or Male only";
             System.out.println(errorMessage);
@@ -77,7 +77,7 @@ public class IDContractChainCode implements ContractInterface {
 
     }
 
-    private void checkReligion(String religion){
+    private void checkReligion(@NotNull String religion){
         if(!religion.equals("Islam") && !religion.equals("Christianity") && !religion.equals("Judaism")){
             String errorMessage = "Relgion is not valid, please Enter Islam, Christianity or Judaism";
             System.out.println(errorMessage);
@@ -86,7 +86,7 @@ public class IDContractChainCode implements ContractInterface {
 
     }
 
-    private void checkMaritalStatus(String maritalStatus){
+    private void checkMaritalStatus(@NotNull String maritalStatus){
         if(!maritalStatus.equals("Single") && !maritalStatus.equals("Married")){
             String errorMessage = "Marital Status is not valid, please Enter Single or Married";
             System.out.println(errorMessage);
@@ -141,36 +141,39 @@ public class IDContractChainCode implements ContractInterface {
      * Creates a new ID on the ledger.
      *
      * @param ctx the transaction context
-     * @param IDNumber the key for the new ID
-     * @param address the address of the new ID
-     * @param fullName the fullName of the ID's user
-     * @param gender the gender of the ID's user
-     * @param religion the religion of the ID's user
      * @param job the job of the ID's user
      * @param maritalStatus the marital status of the ID's user
-     * @param nationality the nationality of the ID's user
-     * @param dateOfBirthString the birth date of the ID's user as a string
-     * @return the issued ID
+    * @return the issued ID
      */
     @Transaction()
-    public ID issueID(final Context ctx, final String IDNumber, final String address, final String fullName,
-                      final String gender, final String religion, final String job, final String maritalStatus,
-                      final String nationality, final String dateOfBirthString){
+    public ID issueID(final Context ctx, final String parentIDNumber, final String job,
+                      final String maritalStatus, String encodedPersonalPic){
 
         ChaincodeStub stub = ctx.getStub();
+        //getID of parent
+        Chaincode.Response parentID = stub.invokeChaincodeWithStringArgs("IDContract",parentIDNumber);
+        ID pID = genson.deserialize(parentID.getMessage(), ID.class);
 
-        String IDState = stub.getStringState(IDNumber);
-        checkIfIDExist(stub, IDState,IDNumber);
-        checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
+        //getBirthCertificate
+        Chaincode.Response birthCert = stub.invokeChaincodeWithStringArgs("BirthCertificateContract",parentIDNumber);
+        BirthCertificate bCert = genson.deserialize(birthCert.getMessage(), BirthCertificate.class);
+
+        //if(!bCert.validateParentName(pID.getFullName()))
+        //throw error Please get the parent
+
+        //stub.invokeChaincode()
+        String IDState = stub.getStringState(bCert.getNumber());
+        checkIfIDExist(stub, IDState,bCert.getNumber());
+        checkMaritalStatus(maritalStatus);
 
         LocalDate expireDate = setExpireDate();
+        byte[] decodedPersonalPic = Base64.getDecoder().decode(encodedPersonalPic);
 
-        byte[] personalPic = "000".getBytes();
-        ID id = new ID(IDNumber, address, fullName, gender, religion,
-                job, maritalStatus, nationality, dateOfBirthString,
-                String.valueOf(expireDate), false, personalPic);
+        ID id = new ID(bCert.getNumber(), pID.getAddress(), bCert.getFullName(), bCert.getGender(),
+                bCert.getReligion(), job, maritalStatus, bCert.getNationality(), bCert.getDateOfBirth(),
+                String.valueOf(expireDate), false, decodedPersonalPic);
         IDState = genson.serialize(id);
-        stub.putStringState(IDNumber, IDState);
+        stub.putStringState(bCert.getNumber(), IDState);
 
         return id;
     }
@@ -188,11 +191,11 @@ public class IDContractChainCode implements ContractInterface {
     private void updateIfExpired(ChaincodeStub stub,ID id, boolean isExpired){
 
         if(isExpired) {
-            ID newID = new ID(id.getNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
+            ID newID = new ID(id.getIDNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
                     id.getJob(), id.getMaritalStatus(), id.getNationality(), id.getDateOfBirth(),
-                    id.getExpireDate(), isExpired, id.getPersonalPicture());
+                    id.getExpireDate(), isExpired, id.getPersonalPic());
             String newIDState = genson.serialize(newID);
-            stub.putStringState(id.getNumber(), newIDState);
+            stub.putStringState(id.getIDNumber(), newIDState);
         }
 
     }
@@ -201,23 +204,22 @@ public class IDContractChainCode implements ContractInterface {
      * Retrieves an ID with the specified ID Number from the ledger.
      *
      * @param ctx the transaction context
-     * @param IDNumber the key
+     * @param key the key
      * @return the ID found on the ledger if there was one
      */
-    @Transaction
-    public ID getID(final Context ctx, final String IDNumber) {
+    @Transaction()
+    public ID getID(final Context ctx, final String key) {
         ChaincodeStub stub = ctx.getStub();
+        String IDState = stub.getStringState(key);
 
-        String idState = stub.getStringState(IDNumber);
-        checkIDExist(idState, IDNumber);
+        if (IDState.isEmpty()) {
+            String errorMessage = String.format("ID %s does not exist", key);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
+        }
 
-        ID id = genson.deserialize(idState, ID.class);
-        boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));
-
-        updateIfExpired(stub,id, isExpired);
-
+        ID id = genson.deserialize(IDState, ID.class);
         return id;
-
     }
 
     /**
@@ -248,8 +250,8 @@ public class IDContractChainCode implements ContractInterface {
 
         checkNewlyCreatedID(fullName, id.getGender(),religion, maritalStatus);
 
-        ID newID = new ID(id.getNumber(), address, fullName, id.getGender(), religion,
-                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, id.getPersonalPicture());
+        ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), religion,
+                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, id.getPersonalPic());
 
         String newIDState = genson.serialize(newID);
         stub.putStringState(IDNumber, newIDState);

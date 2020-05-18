@@ -1,137 +1,55 @@
 package org.hyperledger.fabric.samples.airport;
 
-public class ID {
-    private  String number;
-    private  String address;
-    private  String fullName;
-    private  String gender;
-    private  String religion;
-    private  String job;
-    private  String maritalStatus;
-    private  String nationality;
-    private  String dateOfBirth;
-    private  String expireDate;
-    private  boolean isExpired;
-    private  byte[] personalPicture;
 
-    @Override
-    public String toString() {
-        return "ID{" +
-                "number='" + number + '\'' +
-                ", address='" + address + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", gender='" + gender + '\'' +
-                ", religion='" + religion + '\'' +
-                ", job='" + job + '\'' +
-                ", maritalStatus='" + maritalStatus + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", expireDate='" + expireDate + '\'' +
-                ", isExpired=" + isExpired + '\'' +
-                ", personalPicture=" + personalPicture +
-                '}';
-    }
+import java.util.Date;
+import java.util.Objects;
 
-    public String getNumber() {
-        return number;
-    }
+import org.hyperledger.fabric.contract.annotation.DataType;
+import org.hyperledger.fabric.contract.annotation.Property;
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
+import com.owlike.genson.annotation.JsonProperty;
 
-    public String getAddress() {
-        return address;
-    }
+@DataType
+public final class ID {
+    @Property()
+    private final String IDNumber;
+    @Property()
+    private final String address;
+    @Property()
+    private final String fullName;
+    @Property()
+    private final String gender;
+    @Property()
+    private final String religion;
+    @Property()
+    private final String job;
+    @Property()
+    private final String maritalStatus;
+    @Property()
+    private final String nationality;
+    @Property()
+    private final String dateOfBirth;
+    @Property()
+    private final String expireDate;
+    @Property()
+    private final boolean isExpired;
+    @Property()
+    private final byte[] personalPic;
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getReligion() {
-        return religion;
-    }
-
-    public void setReligion(String religion) {
-        this.religion = religion;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public String getMaritalStatus() {
-        return maritalStatus;
-    }
-
-    public void setMaritalStatus(String maritalStatus) {
-        this.maritalStatus = maritalStatus;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate;
-    }
-
-    public boolean isExpired() {
-        return isExpired;
-    }
-
-    public void setExpired(boolean expired) {
-        isExpired = expired;
-    }
-
-    public byte[] getPersonalPicture() {
-        return personalPicture;
-    }
-
-    public void setPersonalPicture(byte[] personalPicture) {
-        this.personalPicture = personalPicture;
-    }
-
-    public ID(String number, String address, String fullName, String gender, String religion, String job,
-              String maritalStatus, String nationality, String dateOfBirth, String expireDate,
-              boolean isExpired, byte[] personalPicture) {
-        this.number = number;
+    public ID(@JsonProperty("IDNumber") final String IDNumber, @JsonProperty("address") final String address,
+              @JsonProperty("fullName") final String fullName,
+              @JsonProperty("gender") final String gender,
+              @JsonProperty("religion") final String religion,
+              @JsonProperty("job") final String job,
+              @JsonProperty("maritalStatus") final String maritalStatus,
+              @JsonProperty("nationality") final String nationality,
+              @JsonProperty("dateOfBirth") final String dateOfBirth,
+              @JsonProperty("expireDate") final String expireDate,
+              @JsonProperty("isExpired") final boolean isExpired,
+              @JsonProperty("isExpired") final byte[] personalPic
+              )
+    {
+        this.IDNumber = IDNumber;
         this.address = address;
         this.fullName = fullName;
         this.gender = gender;
@@ -142,8 +60,58 @@ public class ID {
         this.dateOfBirth = dateOfBirth;
         this.expireDate = expireDate;
         this.isExpired = isExpired;
-        this.personalPicture = personalPicture;
+        this.personalPic = personalPic;
+
     }
 
+    public String getIDNumber(){ return IDNumber;}
+    public String getAddress(){ return address;}
+    public String getFullName(){ return fullName;}
+    public String getGender(){ return gender;}
+    public String getReligion(){ return religion;}
+    public String getJob(){ return job;}
+    public String getMaritalStatus(){ return maritalStatus;}
+    public String getNationality(){ return nationality;}
+    public String getDateOfBirth(){ return dateOfBirth;}
+    public String getExpireDate(){ return expireDate;}
+    public boolean getIsExpired(){ return isExpired;}
+    public byte[] getPersonalPic(){ return personalPic;}
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+
+        ID other = (ID) obj;
+
+        return Objects.deepEquals(new String[] {getIDNumber(), getAddress(), getFullName(), getGender(),
+                         getReligion(), getJob(),getMaritalStatus(), getNationality(), String.valueOf(getDateOfBirth()),
+                String.valueOf(getExpireDate()), String.valueOf(getIsExpired()), String.valueOf(getPersonalPic())},
+
+                new String[] {other.getIDNumber(), other.getAddress(), other.getFullName(), other.getGender(),
+              	other.getReligion(), other.getJob(), other.getMaritalStatus(), other.getNationality(),
+                        String.valueOf(other.getDateOfBirth()), String.valueOf(other.getExpireDate()),
+                        String.valueOf(other.getIsExpired()), String.valueOf(other.getPersonalPic())});
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIDNumber(), getAddress(), getFullName(), getGender(),
+                 getReligion(), getJob(), getMaritalStatus(), getNationality(), getDateOfBirth(),
+                getExpireDate(),getIsExpired(),getPersonalPic());
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " [IDNumber=" + IDNumber + ", address="
+                + address + ", fullName=" + fullName + ", gender=" + gender  + ", religion=" + religion +
+                ", job=" + job + ", maritalStatus=" + maritalStatus + ", nationality=" + nationality +
+                ", dateOfBirth="+dateOfBirth + ", expireDate=" + expireDate + ", ID Expired=" + isExpired +
+                "personalPic="+personalPic+"]";
+    }
 }
