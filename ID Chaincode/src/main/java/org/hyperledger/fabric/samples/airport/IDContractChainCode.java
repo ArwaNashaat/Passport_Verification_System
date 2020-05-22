@@ -213,4 +213,29 @@ public class IDContractChainCode implements ContractInterface {
 
     }
 
+    @Transaction
+    public ID renewID(final Context ctx, final String IDNumber, final String address, final String fullName,
+                      final String religion, final String job, final String maritalStatus){
+
+        ChaincodeStub stub = ctx.getStub();
+
+        String idState = stub.getStringState(IDNumber);
+        checkIDExist(idState, IDNumber);
+
+        ID id = genson.deserialize(idState, ID.class);
+
+        String ed = String.valueOf(setExpireDate());
+
+        checkNewlyCreatedID(fullName, id.getGender(),religion, maritalStatus);
+
+        ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), religion,
+                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, id.getPersonalPicture());
+
+        String newIDState = genson.serialize(newID);
+        stub.putStringState(IDNumber, newIDState);
+
+        return newID;
+
+    }
+
 }
