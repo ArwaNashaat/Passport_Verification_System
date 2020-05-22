@@ -29,7 +29,7 @@ import java.util.StringTokenizer;
                         name = "ID-airport",
                         url = "https://hyperledger.example.com")))
 @Default
-public class IDContractChainCode implements ContractInterface {
+public class IDContract implements ContractInterface {
 
     private final Genson genson = new Genson();
 
