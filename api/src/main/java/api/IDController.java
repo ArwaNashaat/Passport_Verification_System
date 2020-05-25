@@ -35,7 +35,7 @@ public class IDController {
         try (Gateway gateway = builder.connect()) {
 
             Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("idcodeagain");
+            Contract contract = network.getContract("Chaincode","IDContract");
             byte[] result;
 
             result = contract.evaluateTransaction("getID",ID);
@@ -66,12 +66,14 @@ public class IDController {
             System.out.println(id.getPersonalPicture());
 
             Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("idcodeagain");
+
+            Contract contract = network.getContract("Chaincode","IDContract");
             byte[] result = id.getPersonalPicture().getBytes();
 
             //result = Base64.decodeBase64(result);
             //String str = new String(Base64.encodeBase64(result), "UTF-8");
             //System.out.println(str);
+            //contract.submitTransaction("initLedger");
             contract.submitTransaction("issueID", id.getNumber(), id.getAddress(), id.getFullName(),
                     id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getNationality(),id.getDateOfBirth(),String.valueOf(result));
             return true;
@@ -86,7 +88,7 @@ public class IDController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "http://localhost:4300")
     @GetMapping(path = "/Hospital/getCertificate/{ID}")
     public String GetCertificate(@PathVariable String ID) throws IOException {
         Path walletPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","wallets","Org1");
@@ -94,14 +96,14 @@ public class IDController {
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
         // load a CCP
 
-        Path networkConfigPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","gateways","Org1","Org1.json");
+        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
 
         Gateway.Builder builder = Gateway.createBuilder();
         builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);
         try (Gateway gateway = builder.connect()) {
 
             Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("CertificateContract");
+            Contract contract = network.getContract("BirthCertificateContract");
             byte[] result;
 
             result = contract.evaluateTransaction("getCertificate",ID);
@@ -115,22 +117,22 @@ public class IDController {
     }
 
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = "http://localhost:4300")
     @PostMapping(value="/Hospital/issueCertificate", consumes= MediaType.APPLICATION_JSON_VALUE)
     public boolean issueCertificate(@RequestBody Certificate ct) throws IOException {
-        Path walletPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","wallets","Org1");
+        Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
 
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
         // load a CCP
 
-        Path networkConfigPath = Paths.get("/home","mohanad-belal",".fabric-vscode","environments","myEnv","gateways","Org1","Org1.json");
+        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
 
         Gateway.Builder builder = Gateway.createBuilder();
         builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);
         try (Gateway gateway = builder.connect()) {
 
             Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("CertificateContract");
+            Contract contract = network.getContract("Chaincode","BirthCertificateContract");
             byte[] result;
             result = contract.submitTransaction("issueCertificate",ct.getNumber(),ct.getBirthPlace(),ct.getFullName(),
                     ct.getGender(),ct.getReligion(),ct.getNationality(),ct.getDateOfBirth(),ct.getFatherName(),ct.getFatherReligion(),
