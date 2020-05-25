@@ -1,7 +1,8 @@
 package civil;
+
+import civilHome.ID;
 import com.owlike.genson.Genson;
 
-import airport.ID;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contact;
@@ -133,11 +134,13 @@ public class IDContractCivil implements ContractInterface {
     public ID issueID(final Context ctx, final String IDNumber, final String address, final String fullName,
                       final String gender, final String religion, final String job, final String maritalStatus,
                       final String nationality, final String dateOfBirthString, final String personalPic){
+
         ChaincodeStub stub = ctx.getStub();
 
+        String idState = stub.getStringState(IDNumber);
+        checkIDExist(idState, IDNumber);
 
-        //String IDState = stub.getStringState(IDNumber);
-        //checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
+        checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
 
         LocalDate expireDate = setExpireDate();
 
@@ -145,8 +148,8 @@ public class IDContractCivil implements ContractInterface {
                 religion, job, maritalStatus, nationality, dateOfBirthString,
                 String.valueOf(expireDate), false, personalPic.getBytes());
 
-        String IDState = genson.serialize(id);
-        stub.putStringState(IDNumber, IDState);
+        idState = genson.serialize(id);
+        stub.putStringState(IDNumber, idState);
 
         return id;
     }
@@ -159,41 +162,6 @@ public class IDContractCivil implements ContractInterface {
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
         }
-    }
-
-    private void updateIfExpired(ChaincodeStub stub,ID id, boolean isExpired){
-
-        if(isExpired) {
-            ID newID = new ID(id.getIDNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
-                    id.getJob(), id.getMaritalStatus(), id.getNationality(), id.getDateOfBirth(),
-                    id.getExpireDate(), isExpired, id.getPersonalPicture());
-            String newIDState = genson.serialize(newID);
-            stub.putStringState(id.getIDNumber(), newIDState);
-        }
-
-    }
-
-    /**
-     * Retrieves an ID with the specified ID Number from the ledger.
-     *
-     * @param ctx the transaction context
-     * @param IDNumber the key
-     * @return the ID found on the ledger if there was one
-     */
-    @Transaction
-    public ID getID(final Context ctx, final String IDNumber) {
-        ChaincodeStub stub = ctx.getStub();
-
-        String idState = stub.getStringState(IDNumber);
-        checkIDExist(idState, IDNumber);
-
-        ID id = genson.deserialize(idState, ID.class);
-        boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));
-
-        updateIfExpired(stub,id, isExpired);
-
-        return id;
-
     }
 
     @Transaction

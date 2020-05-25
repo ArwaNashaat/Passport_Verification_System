@@ -1,4 +1,4 @@
-package airport;
+package civilHome;
 import com.owlike.genson.Genson;
 
 import hospital.*;
@@ -19,7 +19,7 @@ import java.util.StringTokenizer;
 @Contract(
         name = "IDContractFromHome",
         info = @Info(
-                title = "IDcontract",
+                title = "IDContract",
                 description = "The hyperlegendary ID contract",
                 version = "0.0.1-SNAPSHOT",
                 license = @License(

@@ -1,13 +1,15 @@
 package api;
 
-import chaincodes.Certificate;
+import chaincodes.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.hyperledger.fabric.gateway.*;
 import chaincodes.ID;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import sun.nio.ch.Net;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -20,27 +22,36 @@ public class IDController {
     static {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
     }
+
+    String walletPathString = "/home/arwa/.fabric-vscode/environments/airport/wallets/Org1";
+    String networkConfigPathString = "/home/arwa/.fabric-vscode/environments/airport/gateways/Org1/Org1.json";
+    String orgID = "org1Admin";
+    String channleName = "mychannel";
+    String chaincodeId = "Chaincode";
+    String contractName = "IDContract";
+
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping(path = "/Airport/getInfo/{ID}")
     public String GetInfo(@PathVariable String ID) throws IOException {
-        Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
 
-        Wallet wallet = Wallet.createFileSystemWallet(walletPath);
-        // load a CCP
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("com.journaldev.spring");
+        context.refresh();
 
-        Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
+        ConfigurationComponent configurationComponent = context.getBean(ConfigurationComponent.class);
+        Gateway gatewayConfig = configurationComponent.getGateway(walletPathString, networkConfigPathString, orgID);
 
-        Gateway.Builder builder = Gateway.createBuilder();
-        builder.identity(wallet, "org1Admin").networkConfig(networkConfigPath).discovery(true);
-        try (Gateway gateway = builder.connect()) {
 
-            Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("Chaincode","IDContract");
+        try (Gateway gateway = gatewayConfig) {
+
+
+            Contract contract = configurationComponent.getContract(gateway, channleName, chaincodeId, contractName);
+            context.close();
+
             byte[] result;
-
             result = contract.evaluateTransaction("getID",ID);
-            System.out.println(new String(result));
             return new String(result);
+
         } catch (ContractException e) {
             e.printStackTrace();
         }
