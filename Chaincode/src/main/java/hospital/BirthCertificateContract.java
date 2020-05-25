@@ -42,23 +42,22 @@ public class BirthCertificateContract implements ContractInterface{
     }
 
     @Transaction()
-    public BirthCertificate issueBirthCertificate(final Context ctx, final BirthCertificate newBirthCertificate){
-    /*public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
+    public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
                                       final String gender, final String idNumber, final String dateOfBirth,
                                       final String birthPlace, final String nationality,
                                       final String fatherName, final String fatherNationality,
                                       final String fatherReligion, final String motherName, final String motherNationality,
                                       final String motherReligion){
-    */
-        /*FatherInfo fatherInfo = new FatherInfo(fatherName,fatherNationality,fatherReligion);
+
+        FatherInfo fatherInfo = new FatherInfo(fatherName,fatherNationality,fatherReligion);
         MotherInfo motherInfo = new MotherInfo(motherName,motherNationality,motherReligion);
         BirthCertificate newBirthCertificate = new BirthCertificate(fullName,religion,gender, idNumber, dateOfBirth, birthPlace,
                 nationality,fatherInfo, motherInfo);
-        */
-        newBirthCertificate.validateBirthCertificate();
+
+        //newBirthCertificate.validateBirthCertificate();
 
         ChaincodeStub stub = ctx.getStub();
-        String idNumber = newBirthCertificate.getIdNumber();
+        //String idNumber = newBirthCertificate.getIdNumber();
 
         String birthCertificateState = stub.getStringState(idNumber);
         if (!birthCertificateState.isEmpty()){

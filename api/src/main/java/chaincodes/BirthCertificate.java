@@ -2,7 +2,7 @@ package chaincodes;
 
 import org.hyperledger.fabric.contract.annotation.Property;
 
-public class Certificate {
+public class BirthCertificate {
 
     private String fullName;
 
@@ -42,7 +42,7 @@ public class Certificate {
         return gender;
     }
 
-    public String getNumber() {
+    public String getIdNumber() {
         return number;
     }
 
@@ -84,7 +84,7 @@ public class Certificate {
 
 
 
-    public Certificate(String fullName, String religion, String gender, String number,
+    public BirthCertificate(String fullName, String religion, String gender, String number,
                        String dateOfBirth, String birthPlace, String nationality,
                        String fatherName, String fatherNationality, String fatherReligion,
                        String motherName, String motherNationality, String motherReligion) {

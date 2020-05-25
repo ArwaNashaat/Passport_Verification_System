@@ -1,6 +1,6 @@
 package api;
 
-import chaincodes.Certificate;
+import chaincodes.BirthCertificate;
 import org.hyperledger.fabric.gateway.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +30,10 @@ public class BirthCertificateController {
         try (Gateway gateway = builder.connect()) {
 
             Network network = gateway.getNetwork("mychannel");
-            Contract contract = network.getContract("BirthCertificateContract");
+            Contract contract = network.getContract("Chaincode","BirthCertificateContract");
             byte[] result;
 
-            result = contract.evaluateTransaction("getCertificate",ID);
+            result = contract.evaluateTransaction("getBirthCertificate",ID);
             System.out.println(new String(result));
             return new String(result);
         } catch (ContractException e) {
@@ -46,7 +46,7 @@ public class BirthCertificateController {
 
     @CrossOrigin(origins = "http://localhost:4300")
     @PostMapping(value="/Hospital/issueCertificate", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public boolean issueCertificate(@RequestBody Certificate ct) throws IOException {
+    public boolean issueCertificate(@RequestBody BirthCertificate birthCertificate) throws IOException {
         Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
 
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
@@ -60,9 +60,11 @@ public class BirthCertificateController {
             Network network = gateway.getNetwork("mychannel");
             Contract contract = network.getContract("Chaincode","BirthCertificateContract");
 
-            contract.submitTransaction("issueCertificate",ct.getNumber(),ct.getBirthPlace(),ct.getFullName(),
-                    ct.getGender(),ct.getReligion(),ct.getNationality(),ct.getDateOfBirth(),ct.getFatherName(),ct.getFatherReligion(),
-                    ct.getFatherNationality(),ct.getMotherName(),ct.getMotherReligion(),ct.getMotherNationality());
+            contract.submitTransaction("issueBirthCertificate", birthCertificate.getFullName(), birthCertificate.getReligion(),
+                    birthCertificate.getGender(),birthCertificate.getIdNumber(), birthCertificate.getDateOfBirth(),
+                    birthCertificate.getBirthPlace(), birthCertificate.getNationality(), birthCertificate.getFatherName(),
+                    birthCertificate.getFatherNationality(), birthCertificate.getFatherReligion(), birthCertificate.getMotherName(),
+                    birthCertificate.getMotherNationality(), birthCertificate.getMotherReligion());
             return true;
         } catch (ContractException e) {
             e.printStackTrace();

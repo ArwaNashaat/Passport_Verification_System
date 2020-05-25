@@ -123,13 +123,6 @@ public final class BirthCertificate {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getFullName(), getReligion(), getGender(),
-                getIdNumber(), String.valueOf(getDateOfBirth()), getBirthPlace(), getNationality() ,
-                String.valueOf(getFatherInfo()), String.valueOf(getMotherInfo()));
-    }
-
-    @Override
     public String toString() {
         return "BirthCertificate{" +
                 "FullName='" + fullName + '\'' +
