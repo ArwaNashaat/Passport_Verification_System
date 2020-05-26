@@ -1,6 +1,7 @@
-package api;
+package controllers;
 
 import chaincodes.*;
+import components.ConfigurationComponent;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.hyperledger.fabric.gateway.*;
@@ -9,6 +10,7 @@ import chaincodes.ID;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import services.GetService;
 import sun.nio.ch.Net;
 
 import java.io.*;
@@ -41,16 +43,14 @@ public class IDController {
         ConfigurationComponent configurationComponent = context.getBean(ConfigurationComponent.class);
         Gateway gatewayConfig = configurationComponent.getGateway(walletPathString, networkConfigPathString, orgID);
 
-
         try (Gateway gateway = gatewayConfig) {
 
-
             Contract contract = configurationComponent.getContract(gateway, channleName, chaincodeId, contractName);
-            context.close();
 
-            byte[] result;
-            result = contract.evaluateTransaction("getID",ID);
-            return new String(result);
+            GetService getService = context.getBean(GetService.class);
+            String result = getService.getService(contract,"getID", ID);
+            context.close();
+            return result;
 
         } catch (ContractException e) {
             e.printStackTrace();
@@ -65,7 +65,6 @@ public class IDController {
         Path walletPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","wallets","Org1");
 
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
-        // load a CCP
 
         Path networkConfigPath = Paths.get("/home","arwa",".fabric-vscode","environments","airport","gateways","Org1","Org1.json");
 

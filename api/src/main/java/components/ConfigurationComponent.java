@@ -1,4 +1,4 @@
-package api;
+package components;
 
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -27,8 +27,8 @@ public class ConfigurationComponent {
     }
 
     public Contract getContract(Gateway gateway, String channleName, String chaincodeId, String contractName){
-        Network network = gateway.getNetwork("mychannel");
-        return network.getContract("Chaincode","IDContract");
+        Network network = gateway.getNetwork(channleName);
+        return network.getContract(chaincodeId,contractName);
 
     }
 }

@@ -1,4 +1,4 @@
-package api;
+package controllers;
 
 import chaincodes.BirthCertificate;
 import org.hyperledger.fabric.gateway.*;
