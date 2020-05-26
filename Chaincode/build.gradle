@@ -32,10 +32,6 @@ repositories {
     }
 }
 
-test {
-    useJUnitPlatform()
-}
-
 shadowJar {
     baseName = 'chaincode'
     version = null

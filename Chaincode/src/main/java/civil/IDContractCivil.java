@@ -102,26 +102,6 @@ public class IDContractCivil implements ContractInterface {
         checkMaritalStatus(maritalStatus);
     }
 
-    private void checkIDNotExpired(ID id){
-        LocalDate expireDate = LocalDate.parse(id.getExpireDate());
-        if(LocalDate.now().isAfter(expireDate)){
-            String errorMessage = "This ID is expired and no longer can be used";
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.EXPIRED_ID.toString());
-        }
-
-    }
-
-    private void checkIfIDExist(ChaincodeStub stub, String IDState, String IDNumber){
-        IDState = stub.getStringState(IDNumber);
-        if (!IDState.isEmpty()) {
-            String errorMessage = String.format("ID %s already exists", IDNumber);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
-        }
-
-    }
-
     private boolean isExpired(LocalDate expireDate){
         LocalDate currentDate = LocalDate.now();
         if(currentDate.isAfter(expireDate))
@@ -137,30 +117,25 @@ public class IDContractCivil implements ContractInterface {
 
         ChaincodeStub stub = ctx.getStub();
 
-        String idState = stub.getStringState(IDNumber);
-        checkIDExist(idState, IDNumber);
-
-        checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
-
         LocalDate expireDate = setExpireDate();
 
         ID id = new ID(IDNumber, address, fullName, gender,
                 religion, job, maritalStatus, nationality, dateOfBirthString,
                 String.valueOf(expireDate), false, personalPic.getBytes());
 
-        idState = genson.serialize(id);
-        stub.putStringState(IDNumber, idState);
-
+        String IDState = genson.serialize(id);
+        stub.putStringState(IDNumber, IDState);
         return id;
     }
 
 
     private void checkIDExist(String idState, String IDNumber){
 
-        if (idState.isEmpty()) {
-            String errorMessage = String.format("ID %s does not exist", IDNumber);
+        ID id = genson.deserialize(idState,ID.class);
+        if (!idState.isEmpty()) {
+            String errorMessage = String.format("ID %s already exists", IDNumber);
             System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
+            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
         }
     }
 

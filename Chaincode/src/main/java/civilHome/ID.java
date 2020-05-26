@@ -1,6 +1,5 @@
 package civilHome;
 
-import java.util.Date;
 import java.util.Objects;
 
 import org.hyperledger.fabric.contract.annotation.DataType;

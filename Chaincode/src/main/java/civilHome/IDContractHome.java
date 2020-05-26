@@ -111,7 +111,7 @@ public class IDContractHome implements ContractInterface {
 
     }
 
-    private void checkIfIDExist(ChaincodeStub stub, String IDState, String IDNumber){
+    private void checkIfExist(ChaincodeStub stub, String IDState, String IDNumber){
         IDState = stub.getStringState(IDNumber);
         if (!IDState.isEmpty()) {
             String errorMessage = String.format("ID %s already exists", IDNumber);
@@ -130,29 +130,22 @@ public class IDContractHome implements ContractInterface {
 
 
     @Transaction()
-    public ID issueID(final Context ctx, final String IDNumber, final String job, final String maritalStatus,
+    public ID issueID(final Context ctx, String IDNumber, final String job, final String maritalStatus,
                       final String personalPic, final String parentIDNumber){
         ChaincodeStub stub = ctx.getStub();
 
         ID parentID = getID(ctx,parentIDNumber);
 
-        //getBirthCertificate
-        /*list = Arrays.asList(new String[]{"getBirthCertificate", IDNumber});
-        Chaincode.Response birthCert = stub.invokeChaincodeWithStringArgs("BirthCertificateContract",list);
-        BirthCertificate birthCertificate = genson.deserialize(birthCert.getMessage(), BirthCertificate.class);*/
-
         BirthCertificateContract birthCertificateContract = new BirthCertificateContract();
         BirthCertificate birthCertificate = birthCertificateContract.getBirthCertificate(ctx,IDNumber);
 
-        //if(!bCert.validateParentName(pID.getFullName()))
-        //throw error Please get the parent
-
-        //stub.invokeChaincode()
-        //String birthCertState = stub.getStringState(birthCertificate.getIdNumber());
-
-        //String IDState = stub.getStringState(IDNumber);
-        //checkIfIDExist(stub, birthCertState,IDNumber);
-        //checkNewlyCreatedID(fullName, gender,religion, maritalStatus);
+        String idState = stub.getStringState(IDNumber);
+        //checkIfExist(stub, birthCertState,IDNumber);
+        if (!idState.isEmpty()) {
+            String errorMessage = String.format("ID %s already exists", IDNumber);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
+        }
 
         LocalDate expireDate = setExpireDate();
 
@@ -160,17 +153,16 @@ public class IDContractHome implements ContractInterface {
                 birthCertificate.getReligion(), job, maritalStatus, birthCertificate.getNationality(), birthCertificate.getDateOfBirth(),
                 String.valueOf(expireDate), false, personalPic.getBytes());
 
-        String IDState = genson.serialize(id);
-        stub.putStringState(IDNumber, IDState);
+        idState = genson.serialize(id);
+        stub.putStringState(IDNumber, idState);
 
         return id;
-
     }
 
 
     private void checkIDExist(String idState, String IDNumber){
 
-        if (idState.isEmpty()) {
+        if (!idState.isEmpty()) {
             String errorMessage = String.format("ID %s does not exist", IDNumber);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
@@ -201,7 +193,11 @@ public class IDContractHome implements ContractInterface {
         ChaincodeStub stub = ctx.getStub();
 
         String idState = stub.getStringState(IDNumber);
-        checkIDExist(idState, IDNumber);
+        if (idState.isEmpty()) {
+            String errorMessage = String.format("ID %s does not exist", IDNumber);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
+        }
 
         ID id = genson.deserialize(idState, ID.class);
         boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));

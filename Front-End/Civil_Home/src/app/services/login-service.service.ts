@@ -12,7 +12,7 @@ export class LoginServiceService {
   constructor(private http: HttpClient) { }
   
   getInfo(ID: number) {
-    return this.http.get<ID>(`http://localhost:8080/Airport/getInfo/${ID}`)
+    return this.http.get<ID>(`http://localhost:8080//Airport/getInfo/${ID}`)
   }
 
 }

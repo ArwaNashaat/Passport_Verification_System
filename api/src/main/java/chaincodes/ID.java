@@ -124,6 +124,13 @@ public class ID {
         return personalPicture;
     }
 
+    public byte[] getPersonalPictureBytes(){ return personalPicture.getBytes(); }
+
+    public void removedataImagString(){
+        String pic = personalPicture.replace("data:image/png;base64,","");
+        setPersonalPicture(pic);
+    }
+
     public void setPersonalPicture(String personalPicture) {
         this.personalPicture = personalPicture;
     }

@@ -43,7 +43,7 @@ public class BirthCertificateContract implements ContractInterface{
 
     @Transaction()
     public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
-                                      final String gender, final String idNumber, final String dateOfBirth,
+                                      final String gender, String idNumber, final String dateOfBirth,
                                       final String birthPlace, final String nationality,
                                       final String fatherName, final String fatherNationality,
                                       final String fatherReligion, final String motherName, final String motherNationality,
@@ -68,18 +68,20 @@ public class BirthCertificateContract implements ContractInterface{
 
         birthCertificateState = genson.serialize(newBirthCertificate);
 
-        stub.putStringState(idNumber, birthCertificateState);
+        stub.putStringState(idNumber+"birthCert", birthCertificateState);
 
         return newBirthCertificate;
     }
 
     @Transaction
-    public BirthCertificate getBirthCertificate(final Context ctx, final String IDNumber) {
+    public BirthCertificate getBirthCertificate(final Context ctx, String IDNumber) {
         ChaincodeStub stub = ctx.getStub();
+
+        IDNumber += "birthCert";
 
         String birthCertificateState = stub.getStringState(IDNumber);
         if(birthCertificateState.isEmpty()) {
-            String errorMessage = String.format("Birth Certificate %s already exists", IDNumber);
+            String errorMessage = String.format("Birth Certificate %s doesn't exist", IDNumber);
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, BirthCertificateErrors.BirthCertificate_NOT_FOUND.toString());
         }
