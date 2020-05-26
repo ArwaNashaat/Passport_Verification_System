@@ -1,27 +1,27 @@
 package services;
 
 
+import chaincodes.BirthCertificate;
 import chaincodes.ID;
 import components.ConfigurationComponent;
-import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.ContractException;
-import org.hyperledger.fabric.gateway.Gateway;
-import org.hyperledger.fabric.gateway.Network;
+import org.hyperledger.fabric.gateway.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
 @Service
 public class Services {
-    public String getFunc(String functionName,String ID) throws IOException {
+    public String getFunc(String contractName, String functionName,String ID) throws IOException {
 
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
 
         try (Gateway gateway = gatewayConfig) {
 
-            Contract contract = configurationComponent.getContract(gateway,"IDContract");
+            Contract contract = configurationComponent.getContract(gateway,contractName);
 
             byte[] result;
             result = contract.evaluateTransaction(functionName,ID);
@@ -58,6 +58,27 @@ public class Services {
             e.printStackTrace();
         }
 
+        return false;
+    }
+
+    public boolean issueBirthCertificate(BirthCertificate birthCertificate) throws IOException {
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway, "BirthCertificateContract");
+            System.out.println(birthCertificate.toString());
+            contract.submitTransaction("issueBirthCertificate", birthCertificate.getFullName(), birthCertificate.getReligion(),
+                    birthCertificate.getGender(),birthCertificate.getIdNumber(), birthCertificate.getDateOfBirth(),
+                    birthCertificate.getBirthPlace(), birthCertificate.getNationality(), birthCertificate.getFullName(),
+                    birthCertificate.getNationality(), birthCertificate.getReligion(), birthCertificate.getFullName(),
+                    birthCertificate.getNationality(), birthCertificate.getReligion());
+            return true;
+        }
+        catch (ContractException | TimeoutException | InterruptedException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }

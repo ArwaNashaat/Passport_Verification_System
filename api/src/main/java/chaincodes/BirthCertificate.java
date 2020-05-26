@@ -1,34 +1,61 @@
 package chaincodes;
 
+import com.owlike.genson.annotation.JsonProperty;
+import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
-public class BirthCertificate {
+import java.util.Objects;
 
-    private String fullName;
+@DataType
+public final class BirthCertificate {
+    private enum BirthCertificateErrors {
+        INVALID_FULL_NAME,
+        INVALID_Gender,
+        INVALID_Religion,
+    }
 
-    private String religion;
+    @Property()
+    private final String fullName;
 
-    private String gender;
+    @Property()
+    private final String religion;
 
-    private String number;
+    @Property()
+    private final String gender;
 
-    private String dateOfBirth;
+    @Property()
+    private final String idNumber;
 
-    private String birthPlace;
+    @Property()
+    private final String dateOfBirth;
 
-    private String nationality;
+    @Property()
+    private final String birthPlace;
 
-    private String fatherName;
+    @Property()
+    private final String nationality;
 
-    private String fatherNationality;
+    @Property()
+    private final FatherInfo fatherInfo;
 
-    private String fatherReligion;
+    @Property()
+    private final MotherInfo motherInfo;
 
-    private String motherName;
-
-    private String motherNationality;
-
-    private String motherReligion;
+    public BirthCertificate(@JsonProperty("fullName") final String fullName, @JsonProperty("religion") final String religion,
+                       @JsonProperty("gender") final String gender, @JsonProperty("idNumber") final String idNumber,
+                       @JsonProperty("dateOfBirth") final String dateOfBirth, @JsonProperty("birthPlace") final String birthPlace,
+                       @JsonProperty("nationality") final String nationality, @JsonProperty("fatherInfo") final FatherInfo fatherInfo,
+                       @JsonProperty("motherInfo") final MotherInfo motherInfo) {
+        this.fullName = fullName;
+        this.religion = religion;
+        this.gender = gender;
+        this.idNumber = idNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.birthPlace = birthPlace;
+        this.nationality = nationality;
+        this.fatherInfo = fatherInfo;
+        this.motherInfo = motherInfo;
+    }
 
     public String getFullName() {
         return fullName;
@@ -43,7 +70,7 @@ public class BirthCertificate {
     }
 
     public String getIdNumber() {
-        return number;
+        return idNumber;
     }
 
     public String getDateOfBirth() {
@@ -58,50 +85,47 @@ public class BirthCertificate {
         return nationality;
     }
 
-    public String getFatherName() {
-        return fatherName;
+    public FatherInfo getFatherInfo() { return  fatherInfo; }
+
+    public MotherInfo getMotherInfo() {
+        return motherInfo;
     }
 
-    public String getFatherNationality() {
-        return fatherNationality;
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+
+        BirthCertificate other = (BirthCertificate) obj;
+
+        return Objects.deepEquals(new String[] {getFullName(), getReligion(), getGender(),
+                        getIdNumber(), String.valueOf(getDateOfBirth()), getBirthPlace(), getNationality() ,
+                        String.valueOf(getFatherInfo()), String.valueOf(getMotherInfo())},
+
+                new String[] {other.getFullName(), other.getReligion(), other.getGender(),
+                              other.getIdNumber(), String.valueOf(other.getDateOfBirth()), other.getBirthPlace(),
+                              other.getNationality(), String.valueOf(other.getFatherInfo()), String.valueOf(other.getMotherInfo())});
     }
 
-    public String getFatherReligion() {
-        return fatherReligion;
+    @Override
+    public String toString() {
+        return "BirthCertificate{" +
+                "FullName='" + fullName + '\'' +
+                ", Religion='" + religion + '\'' +
+                ", Gender='" + gender + '\'' +
+                ", idNumber='" + idNumber +
+                ", DateOfBirth='" + dateOfBirth + '\'' +
+                ", BirthPlace='" + birthPlace + '\'' +
+                ", Nationality='" + nationality + '\'' +
+                fatherInfo.toString() + '\'' +
+                motherInfo.toString() + '\'' +
+                '}';
     }
-
-    public String getMotherName() {
-        return motherName;
-    }
-
-    public String getMotherNationality() {
-        return motherNationality;
-    }
-
-    public String getMotherReligion() {
-        return motherReligion;
-    }
-
-
-
-    public BirthCertificate(String fullName, String religion, String gender, String number,
-                       String dateOfBirth, String birthPlace, String nationality,
-                       String fatherName, String fatherNationality, String fatherReligion,
-                       String motherName, String motherNationality, String motherReligion) {
-        this.fullName = fullName;
-        this.religion = religion;
-        this.gender = gender;
-        this.number = number;
-        this.dateOfBirth = dateOfBirth;
-        this.birthPlace = birthPlace;
-        this.nationality = nationality;
-        this.fatherName = fatherName;
-        this.fatherNationality = fatherNationality;
-        this.fatherReligion = fatherReligion;
-        this.motherName = motherName;
-        this.motherNationality = motherNationality;
-        this.motherReligion = motherReligion;
-    }
-
 
 }
+
