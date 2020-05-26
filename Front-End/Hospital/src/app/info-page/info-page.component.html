@@ -1,0 +1,28 @@
+<br><br>
+<div class="container" >
+    <div class="card bg-light mb-3" style="max-width: 350px; max-height: 600px;">
+        <div class="card-body">
+            <h5 class="card-title"><b>Full Name</b> : {{birthCertificate.fullName}}</h5>
+            <label for="ID"><b>ID</b> : {{ID}}</label><br>
+            <label for="Gender"><b>Gender </b> : {{birthCertificate.gender}}</label><br>
+            <label for="DOB"><b>Date Of birth</b> : {{birthCertificate.dateOfBirth}}</label><br>
+            <label for="Nationality"><b>Nationality</b> : {{birthCertificate.nationality}}</label>
+            <br>
+            <label for="religion"><b>Religion</b> : {{birthCertificate.religion}}</label>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><b>Father Information</b></h5>
+            <label for="fatherName"><b>Father Name</b> : {{fatherInfo.fullName}}</label><br>
+            <label for="fatherNationality"><b>Father Nationality</b> : {{fatherInfo.nationality}}</label><br>
+            <label for="fatherReligion"><b>Father Religion</b> : {{fatherInfo.religion}}</label><br>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><b>Mother Information</b></h5>
+            <label for="motherName"><b>Father Name</b> : {{motherInfo.fullName}}</label><br>
+            <label for="motherNationality"><b>Father Nationality</b> : {{motherInfo.nationality}}</label><br>
+            <label for="motherReligion"><b>Father Religion</b> : {{motherInfo.religion}}</label><br>
+        </div>
+        
+    </div>
+    <a class="btn btn-outline-secondary btn-sm" style="width:350px ; height: 40px;" (click)="AddReport()">Add Medical Report</a>
+</div>

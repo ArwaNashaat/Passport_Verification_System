@@ -1,0 +1,9 @@
+<app-navbar></app-navbar>
+<router-outlet></router-outlet>
+<app-camera (pictureTaken)="handleImage($event)"></app-camera>
+<app-sibiling></app-sibiling> 
+
+
+<div class="snapshot" *ngIf="webcamImage">
+	<img [src]="webcamImage.imageAsDataUrl" />
+</div>
