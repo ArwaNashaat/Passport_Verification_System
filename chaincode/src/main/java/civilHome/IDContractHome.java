@@ -13,6 +13,7 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
+import java.net.IDN;
 import java.time.LocalDate;
 import java.util.StringTokenizer;
 
@@ -206,6 +207,13 @@ public class IDContractHome implements ContractInterface {
 
         return id;
 
+    }
+
+    @Transaction
+    public String getPicturePath(final Context ctx, final String IDNumber) {
+        ID id = getID(ctx, IDNumber);
+
+        return id.getPersonalPicture();
     }
 
     @Transaction

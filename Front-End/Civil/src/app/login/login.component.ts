@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginServiceService } from '../services/login-service.service';
 
@@ -7,6 +7,8 @@ import { LoginServiceService } from '../services/login-service.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
+
 export class LoginComponent implements OnInit {
   Invalid =false;
   InvalidID = false
@@ -16,6 +18,7 @@ export class LoginComponent implements OnInit {
     
   }
 
+@ViewChild('canvas', { static: true }) canvas: ElementRef;
 
   ngOnInit(): void {
   }
@@ -31,8 +34,10 @@ export class LoginComponent implements OnInit {
           .then(
             res => {
               try {
+                alert("before")
                 resolve(res)
-                alert(res.personalPicture)
+                alert(res.personalPicture) 
+                alert("after")
                 this.LoginService.SessionID = res
                 this.LoginService.LoggedIn = true
                 this.router.navigate(['Infopage/', this.ID])
@@ -54,5 +59,14 @@ export class LoginComponent implements OnInit {
       this.Loading = false
     }
   }
-
+  getBase64Image(img) {
+    alert(img)
+    
+    this.canvas.nativeElement.width = img.width;
+    this.canvas.nativeElement.height = img.height;
+    var ctx = this.canvas.nativeElement.getContext("2d").drawImage(img, 0, 0);
+    alert("after")
+    alert(this.canvas.nativeElement.toDataURL());
+    }
+  
 }
