@@ -8,7 +8,7 @@ export class BirthCertificate{
     public  fullName : string,
     public  religion: string,
     public  gender : string,
-    public  number: string,
+    public  idNumber: string,
     public  dateOfBirth: string ,
     public  birthPlace:string,
     public  nationality:string,

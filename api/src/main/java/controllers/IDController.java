@@ -25,7 +25,7 @@ public class IDController {
     public String GetInfo(@PathVariable String ID) throws IOException {
 
         Services services = new Services();
-        return services.getFunc("IDContract","getID",ID);
+        return services.getFunc("IDContractFromHome","getID",ID);
 
     }
 

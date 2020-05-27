@@ -4,6 +4,7 @@ package services;
 import chaincodes.BirthCertificate;
 import chaincodes.ID;
 import components.ConfigurationComponent;
+import org.apache.commons.codec.binary.Base64;
 import org.hyperledger.fabric.gateway.*;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class Services {
 
             byte[] result;
             result = contract.evaluateTransaction(functionName,ID);
+            System.out.println(new String(result));
             return new String(result);
 
         } catch (ContractException e) {
@@ -42,14 +44,14 @@ public class Services {
         try (Gateway gateway = gatewayConfig) {
             id.removedataImagString();
             System.out.println(id.getPersonalPicture());
+            System.out.println(id.getPersonalPictureBytes());
 
             Contract contract = configurationComponent.getContract(gateway, "IDContractAtCivil");
 
             byte[] result = id.getPersonalPictureBytes();
-
-            //result = Base64.decodeBase64(result);
-            //String str = new String(Base64.encodeBase64(result), "UTF-8");
-            //System.out.println(str);
+            /*String pic = new String(result, "UTF-8");
+            System.out.println(pic);
+            */
             contract.submitTransaction("issueID", id.getNumber(), id.getAddress(), id.getFullName(),
                     id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getNationality(),id.getDateOfBirth(),String.valueOf(result));
             return true;

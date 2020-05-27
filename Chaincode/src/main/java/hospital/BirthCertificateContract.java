@@ -54,10 +54,7 @@ public class BirthCertificateContract implements ContractInterface{
         BirthCertificate newBirthCertificate = new BirthCertificate(fullName,religion,gender, idNumber, dateOfBirth, birthPlace,
                 nationality,fatherInfo, motherInfo);
 
-        //newBirthCertificate.validateBirthCertificate();
-
         ChaincodeStub stub = ctx.getStub();
-        //String idNumber = newBirthCertificate.getIdNumber();
 
         String birthCertificateState = stub.getStringState(idNumber);
         if (!birthCertificateState.isEmpty()){
