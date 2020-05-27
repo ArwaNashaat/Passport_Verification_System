@@ -31,7 +31,8 @@ export class LoginComponent implements OnInit {
           .then(
             res => {
               try {
-                resolve(res);
+                resolve(res)
+                alert(res.personalPicture)
                 this.LoginService.SessionID = res
                 this.LoginService.LoggedIn = true
                 this.router.navigate(['Infopage/', this.ID])

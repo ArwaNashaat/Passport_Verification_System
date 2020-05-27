@@ -18,7 +18,7 @@ export class RestService {
     this.InvalidID_Name = false;
     this.Loading = true
     let promise = new Promise((resolve, reject) => {
-      alert("before")
+      
       this.http.post(`http://127.0.0.1:5000/image`, newID)
         .toPromise()
         .then(

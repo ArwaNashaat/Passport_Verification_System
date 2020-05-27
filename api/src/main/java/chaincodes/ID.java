@@ -1,5 +1,7 @@
 package chaincodes;
 
+import com.owlike.genson.annotation.JsonProperty;
+
 public class ID {
     private  String number;
     private  String address;

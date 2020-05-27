@@ -60,7 +60,6 @@ export class CapturePhotoComponent implements OnInit {
     this.renderer.setProperty(this.canvas.nativeElement, 'width', this.videoWidth);
     this.renderer.setProperty(this.canvas.nativeElement, 'height', this.videoHeight);
     this.canvas.nativeElement.getContext('2d').drawImage(this.videoElement.nativeElement, 0, 0);
-
     this.image = (this.canvas.nativeElement.toDataURL("data:image/png;base64"));
     this.sharedImageService.setImage(this.image);
   }
