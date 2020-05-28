@@ -36,9 +36,9 @@ export class InfoPageComponent implements OnInit {
   ngOnInit(): void {
     this.ID = this.route.snapshot.params['ID']
     this,this.myID = this.LoginService.SessionID
-  }
+ }
 
-  Renew(){
+  renew(){
     
   }
   
