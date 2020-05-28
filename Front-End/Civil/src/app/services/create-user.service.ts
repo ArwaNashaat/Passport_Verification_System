@@ -15,7 +15,6 @@ export class CreateUserService {
 
   }
   CreateNewUser(newID: ID) {
-    this.InvalidID_Name = false;
     this.Loading = true
     let promise = new Promise((resolve, reject) => {
 
@@ -25,6 +24,7 @@ export class CreateUserService {
           res => {
             try {
               resolve(res);
+              this.Loading = false
             }
             catch (e) {
               reject(false);
