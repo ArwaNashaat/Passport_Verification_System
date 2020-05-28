@@ -1,13 +1,13 @@
-<br><br>
-<div class="container" >
+<div class="container">
+    <div class="pad-img">
+        <canvas #canvas class="vid"></canvas>
+        <ul>
+            <img src="{{myID.personalPicture}}" class="rounded float-right" alt="...">
+        </ul>
+
+    </div>
     <div class="card bg-light mb-3" style="max-width: 350px; max-height: 600px;">
-        <div class="p-1">
-            <canvas #canvas class="vid"></canvas>
-            <ul>
-                <img src="{{myID.personalPicture}}" class="rounded float-left" alt="...">
-            </ul>
-        </div>
-        <div class="card-body">
+        <div class="card-body ">
             <h5 class="card-title"><b>Full Name</b> : {{myID.fullName}}</h5>
             <label for="ID"><b>ID</b> : {{ID}}</label><br>
             <label for="Gender"><b>Gender </b> : {{myID.gender}}</label><br>
@@ -23,5 +23,7 @@
             <label for="exDate"><b>Expiry Date</b> : {{myID.expireDate}}</label>
         </div>
     </div>
-    <a class="btn btn-outline-secondary btn-sm" style="width:350px ; height: 40px; font-size: 18px" (click)="Renew()">Renew ID</a>
+    <a class="btn btn-outline-secondary btn-sm" style="width:350px ; height: 40px; font-size: 18px"
+        (click)="renew()">Renew ID</a>
+
 </div>

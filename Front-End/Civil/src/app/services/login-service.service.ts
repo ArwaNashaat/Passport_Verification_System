@@ -14,5 +14,5 @@ export class LoginServiceService {
   getInfo(ID: number) {
     return this.http.get<ID>(`http://localhost:8080/Airport/getInfo/${ID}`)
   }
-
+  
 }
