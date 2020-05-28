@@ -9,6 +9,7 @@ export class LoginServiceService {
 
   LoggedIn = false;
   SessionID : ID
+  imageStatus: String
   constructor(private http: HttpClient) { }
   
   getInfo(ID: number) {

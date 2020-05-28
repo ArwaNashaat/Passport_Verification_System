@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ID } from '../info-page/info-page.component';
 import { Router } from '@angular/router';
 import { ShareImageService } from './share-image.service';
+import { LoginServiceService } from './login-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class RestService {
 
   Loading = false
   InvalidID_Name = false;
+  imagestatus: any
+  id:String;
   constructor(private http: HttpClient , private router : Router , private sharedImage : ShareImageService) {
 
   }
@@ -19,12 +22,13 @@ export class RestService {
     this.Loading = true
     let promise = new Promise((resolve, reject) => {
       
-      this.http.post(`http://127.0.0.1:5000/image`, newID)
+      this.http.post(`http://127.0.0.1:8000/image`, newID)
         .toPromise()
         .then(
           res => {
             try {
               resolve(res);
+              alert(res["image_name"])
             }
             catch (e) {
               reject(false);
@@ -39,4 +43,6 @@ export class RestService {
     });
     return promise;
   }
+  
+  
 }

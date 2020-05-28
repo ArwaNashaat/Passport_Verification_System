@@ -4,7 +4,7 @@ import { LoginServiceService } from '../services/login-service.service';
 
 export class ID {
   constructor(
-    public number: string,
+    public IDNumber: string,
     public address: string,
     public fullName: string,
     public gender: string,

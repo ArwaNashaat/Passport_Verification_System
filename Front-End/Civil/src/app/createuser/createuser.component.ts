@@ -24,10 +24,11 @@ export class CreateuserComponent implements OnInit {
   mStatus: string;
   Nationality: string
   image: any;
-  newID: ID
+  newID: ID;
+  image_name: String;
 
   constructor(private router: Router, public CreateUser: CreateUserService, private sharedImageService: ShareImageService,
-    public rest: RestService) {
+    public rest: RestService, private LoginService: LoginServiceService ) {
     this.FullName = "";
     this.ID = 0;
     this.Address = "";
@@ -50,17 +51,16 @@ export class CreateuserComponent implements OnInit {
       this.newID = new ID(this.ID.toString(), this.Address, this.FullName, this.Gender, this.Religion,
         this.Job, this.mStatus, this.Nationality, this.DOB.toString(),
         "0", false, this.image)
-        alert("after")
-        //const v = await this.rest.CreateNewUser(this.newID)
-        const t = await this.CreateUser.CreateNewUser(this.newID)
-      if (t) {
+        const v = await this.rest.CreateNewUser(this.newID)
+        //const t = await this.CreateUser.CreateNewUser(this.newID)
+
+      if (v) {
         alert("ID Created Successfully!")
-        this.router.navigate([''])
+        //this.router.navigate([''])
       }
     }
     else {
       this.Invalid = true
     }
   }
-
 }
