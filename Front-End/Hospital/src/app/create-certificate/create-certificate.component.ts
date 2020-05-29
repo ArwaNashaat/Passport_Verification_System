@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BirthCertificate, MotherInfo, FatherInfo} from '../info-page/info-page.component';
+import { BirthCertificate, MotherInfo, FatherInfo } from '../info-page/info-page.component';
 import { Router } from '@angular/router';
 import { CertificateService } from '../services/certificate.service';
 
@@ -11,7 +11,7 @@ import { CertificateService } from '../services/certificate.service';
 })
 export class CreateCertificateComponent implements OnInit {
 
-  newCertficate:BirthCertificate;
+  newCertficate: BirthCertificate;
   fatherInfo: FatherInfo;
   motherInfo: MotherInfo;
   FullName: string;
@@ -22,47 +22,88 @@ export class CreateCertificateComponent implements OnInit {
   Religion: string
   Invalid: boolean;
   Nationality: string;
-  fatherNation:string;
-  fatherReligion:string;
-  fatherFullName:string;
-  motherNation:string;
-  motherReligion:string;
-  motherFullName:string;
-  constructor(private router : Router , public CreateCertificate:CertificateService) { 
+  fatherNation: string;
+  fatherReligion: string;
+  fatherFullName: string;
+  motherNation: string;
+  motherReligion: string;
+  motherFullName: string;
+  ErrMessage = ""
+  constructor(private router: Router, public CreateCertificate: CertificateService) {
     this.Invalid = false
     this.FullName = ""
     this.fatherFullName = ""
     this.motherFullName = ""
     this.Nationality = ""
     this.birthplace = ""
-    this.motherNation=""
+    this.motherNation = ""
     this.fatherNation = ""
   }
 
   ngOnInit(): void {
+    this.ErrMessage = ""
+    this.Invalid= false
   }
-  async Create(){
-
-    if (this.FullName.length != 0 && this.ID && this.fatherFullName.length != 0 && this.motherFullName.length != 0 && this.Nationality.length != 0
-      &&this.birthplace.length !=0 && this.motherNation.length != 0 && this.fatherFullName.length !=0) {
-     
-      this.fatherInfo = new FatherInfo(this.fatherFullName, this.fatherNation, this.fatherReligion);
-      this.motherInfo = new MotherInfo(this.motherFullName, this.motherNation, this.motherReligion);
-
-      this.newCertficate = new BirthCertificate(this.FullName.toString(),this.Religion.toString(),this.Gender.toString(),this.ID.toString(),
-      this.DOB.toString(),this.birthplace.toString(),this.Nationality.toString(), this.fatherInfo, this.motherInfo)
-      
-      const t =  await this.CreateCertificate.CreateCertificate(this.newCertficate)
-      
-      if (t) {
-        alert("Birth Certificate Created Successfully!")
-        this.CreateCertificate.Loading=false
-        this.router.navigate([''])
-      }
-    }
-    else {
+  async Create() {
+    this.Invalid = false;
+    if ( this.FullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")== null) {
+      this.ErrMessage = "Please Enter Valid FullName"
       this.Invalid = true
+      return
     }
+    if ( this.fatherFullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")==null) {
+      this.ErrMessage = "Please Enter Valid Father's FullName"
+      this.Invalid = true
+      return
+    }
+    if (this.motherFullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")==null) {
+      this.ErrMessage = "Please Enter Valid Mother's FullName"
+      this.Invalid = true
+      return
+    }
+    if (!this.ID) {
+      this.ErrMessage = "Please Enter Valid ID"
+      this.Invalid = true
+      return
+    }
+    if (this.Nationality.length == 0) {
+      this.ErrMessage = "Please Enter Valid Nationality"
+      this.Invalid = true
+      return
+    }
+    if (this.birthplace.length == 0) {
+      this.ErrMessage = "Please Enter Valid Birtplace"
+      this.Invalid = true
+      return
+    }
+    if (this.fatherNation.length == 0) {
+      this.ErrMessage = "Please Enter Valid Father's nationality"
+      this.Invalid = true
+      return
+    }
+    if (this.motherNation.length == 0) {
+      this.ErrMessage = "Please Enter Valid Mother's Nationality"
+      this.Invalid = true
+      return
+    }
+    
+
+    this.fatherInfo = new FatherInfo(this.fatherFullName, this.fatherNation, this.fatherReligion);
+    this.motherInfo = new MotherInfo(this.motherFullName, this.motherNation, this.motherReligion);
+
+    this.newCertficate = new BirthCertificate(this.FullName.toString(), this.Religion.toString(), this.Gender.toString(), this.ID.toString(),
+      this.DOB.toString(), this.birthplace.toString(), this.Nationality.toString(), this.fatherInfo, this.motherInfo)
+
+    const t = await this.CreateCertificate.CreateCertificate(this.newCertficate)
+
+    if (t) {
+      alert("Birth Certificate Created Successfully!")
+      this.CreateCertificate.Loading = false
+      this.router.navigate([''])
+    }
+    this.CreateCertificate.Loading=false;
+
+
   }
 
 }
