@@ -37,6 +37,13 @@ public class IDController {
         return services.issueID(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping(path = "/Airport/getID/{ID}")
+    public void GetIDNumber(@PathVariable String idNumber) throws IOException {
+
+        Services services = new Services();
+        services.getIdNumber(idNumber);
+    }
 }
 
 

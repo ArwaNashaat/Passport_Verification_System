@@ -24,8 +24,11 @@ import static org.apache.tomcat.util.codec.binary.Base64.decodeBase64;
 
 @Service
 public class Services {
-    @Autowired ServletContext context;
     Genson genson = new Genson();
+
+    public void getIdNumber(String idNumber) throws IOException {
+        System.out.println(idNumber);
+    }
 
     public String getFunc(String contractName, String functionName,String ID) throws IOException {
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
@@ -91,11 +94,14 @@ public class Services {
 
             Contract contract = configurationComponent.getContract(gateway, "IDContractAtCivil");
 
-            savePicture(id.getPersonalPicture(), id.getIDNumber());
-
             String path = "../Pictures/"+id.getIDNumber()+".png";
+            System.out.println(id.toString());
+            System.out.println(path);
             contract.submitTransaction("issueID", id.getIDNumber(), id.getAddress(), id.getFullName(),
                     id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getNationality(),id.getDateOfBirth(), path);
+
+            savePicture(id.getPersonalPicture(), id.getIDNumber());
+
             return true;
 
         } catch (ContractException | TimeoutException | InterruptedException e) {
@@ -127,6 +133,8 @@ public class Services {
     }
 
     public boolean savePicture(String picture, String picName) throws IOException {
+        picture = picture.replace("data:image/png;base64,","");
+        //id.setPersonalPicture(x);
 
         byte[] decodedImg = Base64.getDecoder().decode(picture);
         //"/path/to/imageDir", "myImage.jpg"

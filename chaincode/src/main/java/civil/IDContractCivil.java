@@ -1,6 +1,7 @@
 package civil;
 
 import civilHome.ID;
+import civilHome.IDContractHome;
 import com.owlike.genson.Genson;
 
 import org.hyperledger.fabric.contract.Context;
@@ -38,10 +39,6 @@ public class IDContractCivil implements ContractInterface {
     private enum IDErrors {
         ID_NOT_FOUND,
         ID_ALREADY_EXISTS,
-        INVALID_FULL_NAME,
-        INVALID_Gender,
-        INVALID_Religion,
-        INVALID_Marital_Status,
         EXPIRED_ID
     }
 
@@ -49,43 +46,6 @@ public class IDContractCivil implements ContractInterface {
     public void initLedger(final Context ctx) {
     }
 
-    private void checkFullName(String fullName){
-        StringTokenizer fullNameTest = new StringTokenizer(fullName);
-
-        if(fullNameTest.countTokens()!=4){
-            String errorMessage = "Name is not valid, please Enter your full name";
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.INVALID_FULL_NAME.toString());
-        }
-
-    }
-
-    private void checkGender(String gender){
-        if(!gender.equals("Female") && !gender.equals("Male")){
-            String errorMessage = "Gender is not valid, please Enter Female or Male only";
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.INVALID_Gender.toString());
-        }
-
-    }
-
-    private void checkReligion(String religion){
-        if(!religion.equals("Islam") && !religion.equals("Christianity") && !religion.equals("Judaism")){
-            String errorMessage = "Relgion is not valid, please Enter Islam, Christianity or Judaism";
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.INVALID_Religion.toString());
-        }
-
-    }
-
-    private void checkMaritalStatus(String maritalStatus){
-        if(!maritalStatus.equals("Single") && !maritalStatus.equals("Married")){
-            String errorMessage = "Marital Status is not valid, please Enter Single or Married";
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.INVALID_Marital_Status.toString());
-        }
-
-    }
 
     private LocalDate setExpireDate(){
 
@@ -93,13 +53,6 @@ public class IDContractCivil implements ContractInterface {
         LocalDate expireDate = currentDate.plusYears(7);
 
         return expireDate;
-    }
-
-    private void checkNewlyCreatedID(String fullName, String gender, String religion,String maritalStatus){
-        checkFullName(fullName);
-        checkGender(gender);
-        checkReligion(religion);
-        checkMaritalStatus(maritalStatus);
     }
 
     private boolean isExpired(LocalDate expireDate){
@@ -116,12 +69,21 @@ public class IDContractCivil implements ContractInterface {
                       final String nationality, final String dateOfBirthString, final String personalPic){
 
         ChaincodeStub stub = ctx.getStub();
+        String idState = stub.getStringState(IDNumber);
+
+        if (!idState.isEmpty()) {
+            String errorMessage = String.format("ID %s already exists", IDNumber);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
+        }
 
         LocalDate expireDate = setExpireDate();
 
         ID id = new ID(IDNumber, address, fullName, gender,
                 religion, job, maritalStatus, nationality, dateOfBirthString,
                 String.valueOf(expireDate), false, personalPic);
+
+        id.validateID();
 
         String IDState = genson.serialize(id);
         stub.putStringState(IDNumber, IDState);
@@ -152,10 +114,10 @@ public class IDContractCivil implements ContractInterface {
 
         String ed = String.valueOf(setExpireDate());
 
-        checkNewlyCreatedID(fullName, id.getGender(),religion, maritalStatus);
-
         ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), religion,
                 job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, id.getPersonalPicture());
+
+        newID.validateID();
 
         String newIDState = genson.serialize(newID);
         stub.putStringState(IDNumber, newIDState);

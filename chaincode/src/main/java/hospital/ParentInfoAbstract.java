@@ -24,8 +24,8 @@ abstract public class ParentInfoAbstract {
     public void validateParentInfo(){
         ValidateInfo validateInfo = new ValidateInfo();
 
-        validateInfo.checkFullName(fullName);
-        validateInfo.checkReligion(religion);
+        validateInfo.validateFullName(fullName);
+        validateInfo.validateReligion(religion);
 
     }
     @Override

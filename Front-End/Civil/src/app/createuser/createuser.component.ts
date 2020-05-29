@@ -51,12 +51,12 @@ export class CreateuserComponent implements OnInit {
       this.newID = new ID(this.ID.toString(), this.Address, this.FullName, this.Gender, this.Religion,
         this.Job, this.mStatus, this.Nationality, this.DOB.toString(),
         "0", false, this.image)
-        const v = await this.rest.CreateNewUser(this.newID)
-        //const t = await this.CreateUser.CreateNewUser(this.newID)
+        //const v = await this.rest.CreateNewUser(this.newID)
+        const t = await this.CreateUser.CreateNewUser(this.newID)
 
-      if (v) {
+      if (t) {
         alert("ID Created Successfully!")
-        //this.router.navigate([''])
+        //this.router.navigate(['']) //should direct to the info page
       }
     }
     else {

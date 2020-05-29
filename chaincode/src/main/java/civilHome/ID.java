@@ -2,6 +2,7 @@ package civilHome;
 
 import java.util.Objects;
 
+import hospital.ValidateInfo;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
@@ -73,6 +74,16 @@ public final class ID {
     public String getExpireDate(){ return expireDate;}
     public boolean getIsExpired(){ return isExpired;}
     public String getPersonalPicture(){ return personalPicture;}
+
+    public void validateID(){
+        ValidateInfo validateInfo = new ValidateInfo();
+
+        validateInfo.validateFullName(fullName);
+        validateInfo.validateGender(gender);
+        validateInfo.validateReligion(religion);
+        validateInfo.validateMaritalStatus(maritalStatus);
+    }
+
 
     @Override
     public boolean equals(final Object obj) {

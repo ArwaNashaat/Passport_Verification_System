@@ -8,11 +8,6 @@ import java.util.Objects;
 
 @DataType
 public final class BirthCertificate {
-    private enum BirthCertificateErrors {
-        INVALID_FULL_NAME,
-        INVALID_Gender,
-        INVALID_Religion,
-    }
 
     @Property()
     private final String fullName;
@@ -94,9 +89,9 @@ public final class BirthCertificate {
     public void validateBirthCertificate(){
         ValidateInfo validateInfo = new ValidateInfo();
 
-        validateInfo.checkFullName(fullName);
-        validateInfo.checkGender(gender);
-        validateInfo.checkReligion(religion);
+        validateInfo.validateFullName(fullName);
+        validateInfo.validateGender(gender);
+        validateInfo.validateReligion(religion);
         motherInfo.validateParentInfo();
         fatherInfo.validateParentInfo();
     }
