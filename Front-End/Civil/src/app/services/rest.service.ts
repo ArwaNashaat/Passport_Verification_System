@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ID } from '../info-page/info-page.component';
 import { Router } from '@angular/router';
 import { ShareImageService } from './share-image.service';
-import { LoginServiceService } from './login-service.service';
 
 @Injectable({
   providedIn: 'root'
