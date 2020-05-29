@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" *ngIf="this.LoginService.LoggedIn">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <a class="navbar-brand" href="#">Hospital</a>
 
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link btn" href="#" (click)=SignOut()>Sign Out</a>
+                <a class="nav-link btn" href="#" (click)=SignOut() *ngIf="this.LoginService.LoggedIn">Sign Out</a>
             </li>
         </ul>
     </div>
