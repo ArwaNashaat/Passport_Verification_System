@@ -11,23 +11,26 @@ export class RestService {
 
   Loading = false
   InvalidID_Name = false;
-  imagestatus: any
-  id:String;
+  idNumber: String
+
   constructor(private http: HttpClient , private router : Router , private sharedImage : ShareImageService) {
 
   }
-  CreateNewUser(newID: ID) {
+  CreateNewUser(imageToSend: String) {
+    const imageJson = {image: imageToSend};
+  
     this.InvalidID_Name = false;
     this.Loading = true
     let promise = new Promise((resolve, reject) => {
-      
-      this.http.post(`http://127.0.0.1:8000/image`, newID)
+     
+      this.http.post(`http://127.0.0.1:8000/image`, imageJson)
         .toPromise()
         .then(
           res => {
             try {
               resolve(res);
-              alert(res["image_name"])
+              this.idNumber = res["image_name"];
+              alert(this.idNumber)
             }
             catch (e) {
               reject(false);
@@ -42,6 +45,5 @@ export class RestService {
     });
     return promise;
   }
-  
   
 }

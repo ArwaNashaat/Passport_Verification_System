@@ -24,11 +24,10 @@ export class CreateuserComponent implements OnInit {
   mStatus: string;
   Nationality: string
   image: any;
-  newID: ID;
-  image_name: String;
+  newID: ID
 
   constructor(private router: Router, public CreateUser: CreateUserService, private sharedImageService: ShareImageService,
-    public rest: RestService, private LoginService: LoginServiceService ) {
+    public rest: RestService) {
     this.FullName = "";
     this.ID = 0;
     this.Address = "";
@@ -44,23 +43,22 @@ export class CreateuserComponent implements OnInit {
 
   SharedImage: string;
   async Create() {
-    alert(this.image)
     if (this.FullName.length != 0 && this.ID &&
       this.Address.length != 0 && this.Job.length != 0 && this.Nationality.length != 0) {
 
       this.newID = new ID(this.ID.toString(), this.Address, this.FullName, this.Gender, this.Religion,
         this.Job, this.mStatus, this.Nationality, this.DOB.toString(),
         "0", false, this.image)
-        const t = await this.CreateUser.CreateNewUser(this.newID)
-        const v = await this.rest.CreateNewUser(this.newID)
         
-      if (v && t) {
+        const t = await this.CreateUser.CreateNewUser(this.newID)
+      if (t) {
         alert("ID Created Successfully!")
-        //this.router.navigate(['']) //should direct to the info page
+        this.router.navigate(['Infopage/', this.ID])
       }
     }
     else {
       this.Invalid = true
     }
   }
+
 }

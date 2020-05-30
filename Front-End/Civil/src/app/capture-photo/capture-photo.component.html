@@ -6,6 +6,10 @@
                 <video #video class="vid" autoplay></video>
             </div>
             <div class="pb-2">
+                <button class="btn btn-primary" (click)=searchID()>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="Loading"></span>
+                    <span *ngIf="!Loading"> Search ID</span>
+                </button>
                 <button class="btn btn-primary" (click)="capture()">Capture Image</button>
                 <button class="btn btn-primary" (click)="nextPage()">Next Page</button>
             </div>

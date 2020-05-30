@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
 import { Router } from '@angular/router';
 import {ShareImageService} from '../services/share-image.service';
+import { LoginServiceService } from '../services/login-service.service';
+import { RestService } from '../services/rest.service';
+import { CreateUserService } from '../services/create-user.service';
 
 
 @Component({
@@ -15,8 +18,13 @@ export class CapturePhotoComponent implements OnInit {
   videoWidth = 0;
   videoHeight = 0;
   public image: string;
+  Invalid =false;
+  InvalidID = false
+  ID:number
   
-  constructor(private router :Router, private renderer: Renderer2, private sharedImageService: ShareImageService) { 
+  Loading = false;
+
+  constructor(private router :Router, public CreateUser: CreateUserService, public rest: RestService,private renderer: Renderer2, private sharedImageService: ShareImageService, private LoginService: LoginServiceService) { 
     this.image = "";
   }
   
@@ -72,4 +80,57 @@ export class CapturePhotoComponent implements OnInit {
     navigator.mediaDevices.getUserMedia(this.constraints).then(stop);
   }
 
+  
+  async searchID(){
+    //alert(this.image)
+    if (this.image != null) {
+      this.Loading = true
+        //const v = await this.rest.CreateNewUser(this.newID)
+        const t = await this.rest.CreateNewUser(this.image)
+        this.Loading = false
+      if (t) {
+        this.Login(this.rest.idNumber)
+        alert("ID Created Successfully!")
+        //this.router.navigate([''])
+      }
+    }
+    else {
+      this.Invalid = true
+    }
+  }
+  
+  async Login(idNumber: String) {
+    this.Loading = true
+
+    if (idNumber) {
+      let promise = new Promise((resolve, reject) => {
+
+        this.LoginService.getInfo(idNumber)
+          .toPromise()
+          .then(
+            res => {
+              try {
+                resolve(res)
+                
+                this.LoginService.SessionID = res
+                this.LoginService.LoggedIn = true
+                this.router.navigate(['Infopage/', idNumber])
+              }
+              catch (e) {
+                reject(false);
+              }
+            },
+            msg => {
+              this.InvalidID = true
+              this.Loading = false
+              reject(msg);
+            }
+          );
+      });
+    }
+    else {
+      this.Invalid = true;
+      this.Loading = false
+    }
+  }
 }

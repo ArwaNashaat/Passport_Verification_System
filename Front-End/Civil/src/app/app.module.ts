@@ -14,10 +14,10 @@ import {ShareImageService} from './services/share-image.service';
 
 
 const appRoutes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: 'CapturePhoto', component: LoginComponent },
   { path: 'Infopage/:ID', component: InfoPageComponent },
   { path: 'CreateUser', component: CreateuserComponent },
-  { path: 'CapturePhoto', component: CapturePhotoComponent}
+  { path: '', component: CapturePhotoComponent}
   
 ];
 

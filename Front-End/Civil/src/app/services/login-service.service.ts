@@ -9,10 +9,9 @@ export class LoginServiceService {
 
   LoggedIn = false;
   SessionID : ID
-  imageStatus: String
   constructor(private http: HttpClient) { }
   
-  getInfo(ID: number) {
+  getInfo(ID: String) {
     return this.http.get<ID>(`http://localhost:8080/Airport/getInfo/${ID}`)
   }
   

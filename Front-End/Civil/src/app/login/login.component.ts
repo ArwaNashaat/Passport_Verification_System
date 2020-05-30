@@ -12,7 +12,7 @@ import { LoginServiceService } from '../services/login-service.service';
 export class LoginComponent implements OnInit {
   Invalid =false;
   InvalidID = false
-  ID:number
+  ID:String
   Loading = false;
   constructor(private router: Router, private LoginService: LoginServiceService ) {
     
