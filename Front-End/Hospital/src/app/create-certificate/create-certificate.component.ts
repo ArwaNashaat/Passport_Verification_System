@@ -46,17 +46,17 @@ export class CreateCertificateComponent implements OnInit {
   }
   async Create() {
     this.Invalid = false;
-    if ( this.FullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")== null) {
+    if ( this.FullName.match("^[a-zA-Z]{2,}(?: [a-zA-Z--]+){3}$")== null) {
       this.ErrMessage = "Please Enter Valid FullName"
       this.Invalid = true
       return
     }
-    if ( this.fatherFullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")==null) {
+    if ( this.fatherFullName.match("^[a-zA-Z]{2,}(?: [a-zA-Z--]+){3}$")==null) {
       this.ErrMessage = "Please Enter Valid Father's FullName"
       this.Invalid = true
       return
     }
-    if (this.motherFullName.match("^[a-zA-Z]{4,}(?: [a-zA-Z--]+){3}$")==null) {
+    if (this.motherFullName.match("^[a-zA-Z]{2,}(?: [a-zA-Z--]+){3}$")==null) {
       this.ErrMessage = "Please Enter Valid Mother's FullName"
       this.Invalid = true
       return
@@ -99,11 +99,9 @@ export class CreateCertificateComponent implements OnInit {
     if (t) {
       alert("Birth Certificate Created Successfully!")
       this.CreateCertificate.Loading = false
-      this.router.navigate([''])
+     // this.router.navigate([''])
     }
     this.CreateCertificate.Loading=false;
-
-
   }
 
 }
