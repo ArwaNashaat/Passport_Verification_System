@@ -1,0 +1,21 @@
+<div class="alert alert-danger" role="alert" *ngIf="Invalid">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  Invalid Input
+</div>
+<div class="alert alert-dark alert-dismissible" *ngIf="InvalidID">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  <strong>{{ID}}</strong> Doesnt exist.
+</div>
+
+<div class="container sign-in">
+  <h1> <b>Civil Registry</b> </h1>
+  <input type="text" class="form-control" placeholder="User ID" [(ngModel)]="ID" required autofocus>
+  <br>
+  <button class="btn btn-lg  buttons btn-block" (click)=Login()>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="Loading"></span>
+    <span *ngIf="!Loading"> Search</span>
+  </button>
+  <br>
+  <br>
+  <a routerLink="CapturePhoto" class="btn btn-lg buttons btn-block">Create ID</a>
+</div>
