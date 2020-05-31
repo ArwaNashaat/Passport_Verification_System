@@ -22,7 +22,7 @@ public class BirthCertificateController {
     public String GetCertificate(@PathVariable String ID) throws IOException {
 
         Services services = new Services();
-        return services.getFunc("BirthCertificateContract","getBirthCertificate",ID);
+        return services.getBirthCertificate("BirthCertificateContract",ID);
 
     }
 

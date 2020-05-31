@@ -20,17 +20,11 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.concurrent.TimeoutException;
 
-import static org.apache.tomcat.util.codec.binary.Base64.decodeBase64;
-
 @Service
 public class Services {
     Genson genson = new Genson();
+    public String getID(String contractName,String ID) throws IOException {
 
-    public void getIdNumber(String idNumber) throws IOException {
-        System.out.println(idNumber);
-    }
-
-    public String getFunc(String contractName, String functionName,String ID) throws IOException {
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
 
@@ -39,11 +33,10 @@ public class Services {
             Contract contract = configurationComponent.getContract(gateway,contractName);
 
             byte[] result;
-            result = contract.evaluateTransaction(functionName,ID);
-            System.out.println(new String(result));
+            result = contract.evaluateTransaction("getID",ID);
 
             ID id = genson.deserialize(result,ID.class);
-            //System.out.println(ID);
+
             String pic = getPicture(ID);
             id.setPersonalPicture(pic);
 
@@ -84,6 +77,25 @@ public class Services {
     }
 
 
+    public String getBirthCertificate(String contractName, String ID) throws IOException {
+
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway,contractName);
+
+            byte[] result;
+            result = contract.evaluateTransaction("getBirthCertificate",ID);
+            return new String(result);
+
+        } catch (ContractException e) {
+            e.printStackTrace();
+        }
+
+        return ID + "not found";
+    }
 
     public boolean issueID(ID id) throws IOException {
 
@@ -93,14 +105,27 @@ public class Services {
         try (Gateway gateway = gatewayConfig) {
 
             Contract contract = configurationComponent.getContract(gateway, "IDContractAtCivil");
+            Contract contract2 = configurationComponent.getContract(gateway, "IDContractFromHome");
 
-            String path = "../Pictures/"+id.getIDNumber()+".png";
-            System.out.println(id.toString());
-            System.out.println(path);
-            contract.submitTransaction("issueID", id.getIDNumber(), id.getAddress(), id.getFullName(),
-                    id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getNationality(),id.getDateOfBirth(), path);
+            byte[] lastID = contract2.evaluateTransaction("getLastIDNumber");
+            Integer lastIDInt = Integer.parseInt(new String(lastID))+1;
+            String lastIDString = lastIDInt.toString();
+            System.out.println(lastIDString);
 
-            savePicture(id.getPersonalPicture(), id.getIDNumber());
+            String path = "../Pictures/"+lastIDString+".png";
+
+            /*System.out.println(id.getFullName());
+            System.out.println(id.getAddress());
+            System.out.println(id.getGender());
+            System.out.println(id.getReligion());
+            System.out.println(id.getJob());
+            System.out.println(id.getMaritalStatus());
+            System.out.println(id.getDateOfBirth());
+            System.out.println(id.getPersonalPicture());*/
+            contract.submitTransaction("issueID", id.getAddress(), id.getFullName(),
+                    id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getDateOfBirth(), path);
+
+            savePicture(id.getPersonalPicture(), lastIDString);
 
             return true;
 
@@ -118,7 +143,7 @@ public class Services {
         try (Gateway gateway = gatewayConfig) {
 
             Contract contract = configurationComponent.getContract(gateway, "BirthCertificateContract");
-            System.out.println(birthCertificate.toString());
+
             contract.submitTransaction("issueBirthCertificate", birthCertificate.getFullName(), birthCertificate.getReligion(),
                     birthCertificate.getGender(),birthCertificate.getIdNumber(), birthCertificate.getDateOfBirth(),
                     birthCertificate.getBirthPlace(), birthCertificate.getNationality(), birthCertificate.getFullName(),
@@ -143,5 +168,23 @@ public class Services {
         Files.write(destinationFile, decodedImg);
 
         return true;
+    }
+    private String getIdNumber() throws IOException {
+
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway,"IDContractFromHome");
+
+            byte[] result;
+            result = contract.evaluateTransaction("getLastIDNumber");
+            return new String(result);
+
+        } catch (ContractException e) {
+            e.printStackTrace();
+        }
+
+        return "No ID Found";
     }
 }

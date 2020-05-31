@@ -25,7 +25,7 @@ public class IDController {
     public String GetInfo(@PathVariable String ID) throws IOException {
 
         Services services = new Services();
-        return services.getFunc("IDContractFromHome","getID",ID);
+        return services.getID("IDContractFromHome",ID);
 
     }
 
@@ -37,13 +37,13 @@ public class IDController {
         return services.issueID(id);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    /*@CrossOrigin(origins = "http://localhost:4200")
     @GetMapping(path = "/Airport/getID/{ID}")
     public void GetIDNumber(@PathVariable String idNumber) throws IOException {
 
         Services services = new Services();
         services.getIdNumber(idNumber);
-    }
+    }*/
 }
 
 
