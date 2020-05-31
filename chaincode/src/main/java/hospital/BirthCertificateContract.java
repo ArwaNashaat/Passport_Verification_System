@@ -1,4 +1,5 @@
 package hospital;
+import civilHome.IDContractHome;
 import com.owlike.genson.Genson;
 
 import com.owlike.genson.annotation.JsonProperty;
@@ -43,11 +44,14 @@ public class BirthCertificateContract implements ContractInterface{
 
     @Transaction()
     public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
-                                      final String gender, String idNumber, final String dateOfBirth,
+                                      final String gender, final String dateOfBirth,
                                       final String birthPlace, final String nationality,
                                       final String fatherName, final String fatherNationality,
                                       final String fatherReligion, final String motherName, final String motherNationality,
                                       final String motherReligion){
+
+        IDContractHome home = new IDContractHome();
+        String idNumber = home.setLastIDNumber(ctx);
 
         FatherInfo fatherInfo = new FatherInfo(fatherName,fatherNationality,fatherReligion);
         MotherInfo motherInfo = new MotherInfo(motherName,motherNationality,motherReligion);
@@ -56,6 +60,8 @@ public class BirthCertificateContract implements ContractInterface{
 
         newBirthCertificate.validateBirthCertificate();
         ChaincodeStub stub = ctx.getStub();
+
+        idNumber+="birthCert";
 
         String birthCertificateState = stub.getStringState(idNumber);
         if (!birthCertificateState.isEmpty()){
@@ -66,7 +72,7 @@ public class BirthCertificateContract implements ContractInterface{
 
         birthCertificateState = genson.serialize(newBirthCertificate);
 
-        stub.putStringState(idNumber+"birthCert", birthCertificateState);
+        stub.putStringState(idNumber, birthCertificateState);
 
         return newBirthCertificate;
     }

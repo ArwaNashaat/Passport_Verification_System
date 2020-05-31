@@ -64,9 +64,12 @@ public class IDContractCivil implements ContractInterface {
 
 
     @Transaction()
-    public ID issueID(final Context ctx, final String IDNumber, final String address, final String fullName,
+    public ID issueID(final Context ctx, final String address, final String fullName,
                       final String gender, final String religion, final String job, final String maritalStatus,
-                      final String nationality, final String dateOfBirthString, final String personalPic){
+                      final String dateOfBirthString, final String personalPic){
+
+        IDContractHome home = new IDContractHome();
+        String IDNumber = home.setLastIDNumber(ctx);
 
         ChaincodeStub stub = ctx.getStub();
         String idState = stub.getStringState(IDNumber);
@@ -80,7 +83,7 @@ public class IDContractCivil implements ContractInterface {
         LocalDate expireDate = setExpireDate();
 
         ID id = new ID(IDNumber, address, fullName, gender,
-                religion, job, maritalStatus, nationality, dateOfBirthString,
+                religion, job, maritalStatus, "Egyptian", dateOfBirthString,
                 String.valueOf(expireDate), false, personalPic);
 
         id.validateID();
@@ -93,7 +96,6 @@ public class IDContractCivil implements ContractInterface {
 
     private void checkIDExist(String idState, String IDNumber){
 
-        ID id = genson.deserialize(idState,ID.class);
         if (!idState.isEmpty()) {
             String errorMessage = String.format("ID %s already exists", IDNumber);
             System.out.println(errorMessage);

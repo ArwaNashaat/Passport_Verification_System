@@ -13,6 +13,7 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
+import java.security.PublicKey;
 import java.time.LocalDate;
 
 @Contract(
@@ -40,6 +41,8 @@ public class IDContractHome implements ContractInterface {
 
     @Transaction()
     public void initLedger(final Context ctx) {
+        ChaincodeStub stub = ctx.getStub();
+        stub.putStringState("lastID", "0");
     }
 
     private LocalDate setExpireDate(){
@@ -71,7 +74,7 @@ public class IDContractHome implements ContractInterface {
     }
 
     @Transaction()
-    public ID issueID(final Context ctx, String IDNumber, final String job, final String maritalStatus,
+    public ID issueID(final Context ctx, final String IDNumber,final String job, final String maritalStatus,
                       final String personalPic, final String parentIDNumber){
         ChaincodeStub stub = ctx.getStub();
 
@@ -118,6 +121,28 @@ public class IDContractHome implements ContractInterface {
 
         return newID;
 
+    }
+
+    @Transaction
+    public String getLastIDNumber(final Context ctx){
+
+        ChaincodeStub stub = ctx.getStub();
+        String idNumber = stub.getStringState("lastID");
+
+        return idNumber;
+
+    }
+
+    @Transaction
+    public String setLastIDNumber(final Context ctx){
+
+        ChaincodeStub stub = ctx.getStub();
+        Integer id = Integer.parseInt(getLastIDNumber(ctx));
+
+        String idString = String.valueOf(++id);
+        stub.putStringState("lastID", idString);
+
+        return idString;
     }
 
     @Transaction
