@@ -13,7 +13,7 @@ import {RestService} from '../services/rest.service';
 })
 export class CreateuserComponent implements OnInit {
   FullName: string;
-  ID: number;
+  ID: string;
   Address: string;
   Job: string;
   Gender: string;
@@ -22,14 +22,13 @@ export class CreateuserComponent implements OnInit {
   Religion: string
   Invalid: boolean;
   mStatus: string;
-  Nationality: string
   image: any;
   newID: ID
 
   constructor(private router: Router, public CreateUser: CreateUserService, private sharedImageService: ShareImageService,
-    public rest: RestService) {
+    public rest: RestService, public LoginService: LoginServiceService) {
     this.FullName = "";
-    this.ID = 0;
+    this.ID = "0";
     this.Address = "";
     this.Job = ""
     this.Gender = "";
@@ -43,22 +42,53 @@ export class CreateuserComponent implements OnInit {
 
   SharedImage: string;
   async Create() {
-    if (this.FullName.length != 0 && this.ID &&
-      this.Address.length != 0 && this.Job.length != 0 && this.Nationality.length != 0) {
+    if (this.FullName.length != 0 &&
+      this.Address.length != 0 && this.Job.length != 0) {
 
-      this.newID = new ID(this.ID.toString(), this.Address, this.FullName, this.Gender, this.Religion,
-        this.Job, this.mStatus, this.Nationality, this.DOB.toString(),
+      this.newID = new ID(this.Address, this.FullName, this.Gender, this.Religion,
+        this.Job, this.mStatus,"Egyptian",this.DOB.toString(),
         "0", false, this.image)
         
         const t = await this.CreateUser.CreateNewUser(this.newID)
       if (t) {
         alert("ID Created Successfully!")
-        this.router.navigate(['Infopage/', this.ID])
+
+        this.Login();
       }
     }
     else {
       this.Invalid = true
     }
+  }
+
+  async Login() {
+
+    let promise = new Promise((resolve, reject) => {
+      this.CreateUser.Loading = true
+      this.LoginService.getInfo(this.ID)
+        .toPromise()
+        .then(
+          res => {
+            try {
+              resolve(res)
+              
+              this.LoginService.SessionID = res
+              this.LoginService.LoggedIn = true
+              this.CreateUser.Loading = false
+              this.router.navigate(['Infopage/', this.ID])
+            }
+            catch (e) {
+              this.CreateUser.Loading = false
+              reject(false);
+            }
+          },
+          msg => {
+            this.CreateUser.Loading = false
+            reject(msg);
+          }
+        );
+    });
+    
   }
 
 }

@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
                 
                 this.LoginService.SessionID = res
                 this.LoginService.LoggedIn = true
+                this.Loading = false
                 this.router.navigate(['Infopage/', this.ID])
               }
               catch (e) {
