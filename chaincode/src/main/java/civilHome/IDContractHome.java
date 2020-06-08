@@ -1,4 +1,6 @@
 package civilHome;
+import civil.IDBuilder;
+import civil.IDDirector;
 import com.owlike.genson.Genson;
 
 import hospital.*;
@@ -13,7 +15,6 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
-import java.security.PublicKey;
 import java.time.LocalDate;
 
 @Contract(
@@ -34,7 +35,7 @@ public class IDContractHome implements ContractInterface {
 
     private final Genson genson = new Genson();
 
-    private enum IDErrors {
+    public enum IDErrors {
         ID_NOT_FOUND,
         ID_ALREADY_EXISTS
     }
@@ -91,10 +92,10 @@ public class IDContractHome implements ContractInterface {
         }
 
         LocalDate expireDate = setExpireDate();
-
-        ID id = new ID(birthCertificate.getIdNumber(), parentID.getAddress(), birthCertificate.getFullName(), birthCertificate.getGender(),
-                birthCertificate.getReligion(), job, maritalStatus, birthCertificate.getNationality(), birthCertificate.getDateOfBirth(),
-                String.valueOf(expireDate), false, personalPic);
+        IDBuilder builder = new IDBuilder();
+        IDDirector IDCreator = new IDDirector(builder);
+        IDCreator.construct(birthCertificate, parentID.getAddress(),job, maritalStatus, String.valueOf(expireDate), personalPic);
+        ID id = IDCreator.getID();
 
         idState = genson.serialize(id);
         stub.putStringState(IDNumber, idState);
@@ -118,9 +119,7 @@ public class IDContractHome implements ContractInterface {
         boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));
 
         ID newID = updateIfExpired(stub,id, isExpired);
-
         return newID;
-
     }
 
     @Transaction

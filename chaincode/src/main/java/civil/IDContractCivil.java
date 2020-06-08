@@ -61,8 +61,8 @@ public class IDContractCivil implements ContractInterface {
             return true;
         return false;
     }
-
-
+//["22","Arwa Nashaat Serry Abdl","Female", "Islam", "SW", "Single", "05-11-1998","cc"]
+//["Amira Nashaat Serry Abdl","Islam", "Female", "05-11-1998", "Giza", "Egyptian","49","49"]
     @Transaction()
     public ID issueID(final Context ctx, final String address, final String fullName,
                       final String gender, final String religion, final String job, final String maritalStatus,
