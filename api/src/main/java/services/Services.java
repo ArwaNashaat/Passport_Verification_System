@@ -5,6 +5,7 @@ import chaincodes.BirthCertificate;
 import chaincodes.ID;
 import com.owlike.genson.Genson;
 import components.ConfigurationComponent;
+import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.gateway.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,31 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.concurrent.TimeoutException;
 
 @Service
 public class Services {
     Genson genson = new Genson();
+    public String renewID(String currentID, String job, String maritalStatus) throws IOException{
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway, "IDContractFromHome");
+
+            contract.submitTransaction("renewID", currentID, job, maritalStatus);
+
+            return currentID;
+
+        } catch (ContractException | TimeoutException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String getID(String contractName,String ID) throws IOException {
 
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
@@ -97,7 +117,7 @@ public class Services {
         return ID + "not found";
     }
 
-    public boolean issueID(ID id) throws IOException {
+    public String issueID(ID id) throws IOException {
 
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
@@ -110,30 +130,20 @@ public class Services {
             byte[] lastID = contract2.evaluateTransaction("getLastIDNumber");
             Integer lastIDInt = Integer.parseInt(new String(lastID))+1;
             String lastIDString = lastIDInt.toString();
-            System.out.println(lastIDString);
 
             String path = "../Pictures/"+lastIDString+".png";
 
-            /*System.out.println(id.getFullName());
-            System.out.println(id.getAddress());
-            System.out.println(id.getGender());
-            System.out.println(id.getReligion());
-            System.out.println(id.getJob());
-            System.out.println(id.getMaritalStatus());
-            System.out.println(id.getDateOfBirth());
-            System.out.println(id.getPersonalPicture());*/
             contract.submitTransaction("issueID", id.getAddress(), id.getFullName(),
                     id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getDateOfBirth(), path);
 
             savePicture(id.getPersonalPicture(), lastIDString);
 
-            return true;
+            return lastIDString;
 
         } catch (ContractException | TimeoutException | InterruptedException e) {
             e.printStackTrace();
         }
-
-        return false;
+        return null;
     }
 
     public boolean issueBirthCertificate(BirthCertificate birthCertificate) throws IOException {
@@ -144,11 +154,12 @@ public class Services {
 
             Contract contract = configurationComponent.getContract(gateway, "BirthCertificateContract");
 
+            System.out.println(birthCertificate.getFatherInfo());
+            System.out.println(birthCertificate.getMotherInfo());
             contract.submitTransaction("issueBirthCertificate", birthCertificate.getFullName(), birthCertificate.getReligion(),
-                    birthCertificate.getGender(),birthCertificate.getIdNumber(), birthCertificate.getDateOfBirth(),
-                    birthCertificate.getBirthPlace(), birthCertificate.getNationality(), birthCertificate.getFullName(),
-                    birthCertificate.getNationality(), birthCertificate.getReligion(), birthCertificate.getFullName(),
-                    birthCertificate.getNationality(), birthCertificate.getReligion());
+                    birthCertificate.getGender(), birthCertificate.getDateOfBirth(), birthCertificate.getBirthPlace(),
+                    birthCertificate.getNationality(), birthCertificate.getFatherInfo().getFullName(),
+                    birthCertificate.getMotherInfo().getFullName());
             return true;
         }
         catch (ContractException | TimeoutException | InterruptedException e) {
@@ -169,7 +180,8 @@ public class Services {
 
         return true;
     }
-    private String getIdNumber() throws IOException {
+
+    /*private String getIdNumber() throws IOException {
 
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
@@ -186,5 +198,28 @@ public class Services {
         }
 
         return "No ID Found";
+    }*/
+
+    public String getBC(String contractName,String ID, String childName) throws IOException {
+
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway,contractName);
+
+            byte[] result;
+
+            result = contract.evaluateTransaction("getBirthCertByParentID",ID, childName);
+
+            return new String(result);
+
+        } catch (ContractException e) {
+            e.printStackTrace();
+        }
+
+        return ID + "not found";
     }
+
 }
