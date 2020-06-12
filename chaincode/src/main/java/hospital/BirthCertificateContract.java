@@ -1,6 +1,7 @@
 package hospital;
 import civilHome.ID;
 import civilHome.IDContractHome;
+import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 
@@ -18,6 +19,7 @@ import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.KeyValue;
 import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
+import java.net.IDN;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,20 +55,18 @@ public class BirthCertificateContract implements ContractInterface{
     public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
                                                 final String gender, final String dateOfBirth,
                                                 final String birthPlace, final String nationality,
-                                                final String fatherIDNumber, final String motherIDNumber){
+                                                final String fatherName, final String motherName){
 
         IDContractHome home = new IDContractHome();
         ChaincodeStub stub = ctx.getStub();
 
-        ID fatherID = home.getID(ctx, fatherIDNumber);
-        ID motherID = home.getID(ctx, motherIDNumber);
+        ID fatherID = getIDByName(ctx, fatherName);
+        ID motherID = getIDByName(ctx, motherName);
 
         String idNumber = home.setLastIDNumber(ctx);
-        addChild(fatherID, idNumber, stub, fatherIDNumber);
-        addChild(motherID, idNumber, stub, motherIDNumber);
 
-        FatherInfo fatherInfo = new FatherInfo(fatherID.getFullName(),"Egyptian",fatherID.getReligion());
-        MotherInfo motherInfo = new MotherInfo(motherID.getFullName(), "Egyptian", motherID.getReligion());
+        FatherInfo fatherInfo = new FatherInfo(fatherID.getFullName(),"Egyptian",fatherID.getReligion(), fatherID.getIDNumber());
+        MotherInfo motherInfo = new MotherInfo(motherID.getFullName(), "Egyptian", motherID.getReligion(), motherID.getIDNumber());
 
         idNumber+="birthCert";
 
@@ -83,19 +83,10 @@ public class BirthCertificateContract implements ContractInterface{
 
     }
 
-    public ID addChild(ID parentID, String idNumber, ChaincodeStub stub, String parentIDNumber){
-        parentID.addChild(idNumber);
-
-        String idState = genson.serialize(parentID);
-        stub.putStringState(parentIDNumber,idState);
-        String f = stub.getStringState(parentIDNumber);
-        return genson.deserialize(f, ID.class);
-    }
-
-    @Transaction
+    /*@Transaction
     public BirthCertificate getBirthCertificate(final Context ctx, String IDNumber) {
         ChaincodeStub stub = ctx.getStub();
-
+        //getIDByNumber();
         IDNumber += "birthCert";
 
         String birthCertificateState = stub.getStringState(IDNumber);
@@ -108,16 +99,12 @@ public class BirthCertificateContract implements ContractInterface{
         BirthCertificate birthCertificate = genson.deserialize(birthCertificateState, BirthCertificate.class);
         return birthCertificate;
 
-    }
+    }*/
+
     @Transaction
-    public String query(final Context ctx){
+    public ID getIDByName(final Context ctx, String name){
         ChaincodeStub stub = ctx.getStub();
-        //String queryStr = "{\"selector\": {\"type\": \"wallet\"}}";
-        //QueryResultsIterator<KeyValue> rows = stub.getQueryResult(queryStr);
-        /*'SELECT org.hyperledger_composer.marbles.Marble
-        WHERE (color == "green")'*/
-        //queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"marble\",\"owner\":\"%s\"}}", owner)
-        String queryString = "{\"selector\":{\"fullName\":\"Arwa Nashaat Serry Abdl\"}}";
+        String queryString = "{\"selector\":{\"fullName\":\""+name+"\"}}";
         QueryResultsIterator<KeyValue> queryResult = stub.getQueryResult(queryString);
         Iterator<KeyValue> iter = queryResult.iterator();
         String s = "nothing found";
@@ -127,9 +114,43 @@ public class BirthCertificateContract implements ContractInterface{
         try {
             queryResult.close();
         } catch (Exception e) {
-            return "No exception expected";
         }
 
-        return s;
+        return genson.deserialize(s,ID.class);
+    }
+
+    @Transaction
+    public BirthCertificate getBirthCertByParentID(final Context ctx, String parentIDNumber, String childName) {
+        ChaincodeStub stub = ctx.getStub();
+
+        String queryStringMother = "{\"selector\":{\"fullName\":\""+childName+"\"," +
+                                    "\"motherInfo\":{\"idNumber\":\"" + parentIDNumber + "\"}}}";
+        String queryStringFather = "{\"selector\":{\"fullName\":\""+childName+"\"," +
+                                    "\"fatherInfo\":{\"idNumber\":\"" + parentIDNumber + "\"}}}";
+
+        QueryResultsIterator<KeyValue> queryResultMother = stub.getQueryResult(queryStringMother);
+        QueryResultsIterator<KeyValue> queryResultFather = stub.getQueryResult(queryStringFather);
+        Iterator<KeyValue> iterMother = queryResultMother.iterator();
+        Iterator<KeyValue> iterFather = queryResultFather.iterator();
+
+        String s = "null";
+        while (iterMother.hasNext()) {
+            s = iterMother.next().getStringValue();
+        }
+        while (s.equals("null") && iterFather.hasNext()) {
+            s = iterFather.next().getStringValue();
+        }
+        try {
+            queryResultMother.close();
+            queryResultFather.close();
+            if(s.equals("null")){
+                String errorMessage = String.format("Birth Certificate %s does not exist", parentIDNumber);
+                throw new ChaincodeException(errorMessage, BirthCertificateErrors.BirthCertificate_NOT_FOUND.toString());
+            }
+        } catch (Exception e) {
+            String errorMessage = String.format("Birth Certificate %s does not exist", parentIDNumber);
+            throw new ChaincodeException(errorMessage, BirthCertificateErrors.BirthCertificate_NOT_FOUND.toString());
+        }
+        return genson.deserialize(s,BirthCertificate.class);
     }
 }

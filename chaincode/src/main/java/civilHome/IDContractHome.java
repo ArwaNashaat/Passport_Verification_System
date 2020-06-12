@@ -74,15 +74,18 @@ public class IDContractHome implements ContractInterface {
         return id;
     }
 
-    @Transaction()
-    public ID issueID(final Context ctx, final String IDNumber,final String job, final String maritalStatus,
+    /*@Transaction()
+    public ID issueID(final Context ctx/*, final String IDNumber*//*,final String job, final String maritalStatus,
                       final String personalPic, final String parentIDNumber){
         ChaincodeStub stub = ctx.getStub();
 
         ID parentID = getID(ctx,parentIDNumber);
 
         BirthCertificateContract birthCertificateContract = new BirthCertificateContract();
-        BirthCertificate birthCertificate = birthCertificateContract.getBirthCertificate(ctx,IDNumber);
+        ArrayList<BirthCertificate> birthCertificate = new ArrayList<>();
+        birthCertificate = birthCertificateContract.getBirthCertByParentID(ctx,parentIDNumber);//.getBirthCertificate(ctx,IDNumber);
+
+        String IDNumber = birthCertificate.get(0).getIdNumber();
 
         String idState = stub.getStringState(IDNumber);
         if (!idState.isEmpty()) {
@@ -94,7 +97,7 @@ public class IDContractHome implements ContractInterface {
         LocalDate expireDate = setExpireDate();
         IDBuilder builder = new IDBuilder();
         IDDirector IDCreator = new IDDirector(builder);
-        IDCreator.construct(birthCertificate, parentID.getAddress(),job, maritalStatus, String.valueOf(expireDate), personalPic);
+        IDCreator.construct(birthCertificate.get(0), parentID.getAddress(),job, maritalStatus, String.valueOf(expireDate), personalPic);
         ID id = IDCreator.getID();
 
         idState = genson.serialize(id);
@@ -102,7 +105,7 @@ public class IDContractHome implements ContractInterface {
 
         return id;
     }
-
+*/
 
     @Transaction
     public ID getID(final Context ctx, final String IDNumber) {
@@ -152,8 +155,7 @@ public class IDContractHome implements ContractInterface {
     }
 
     @Transaction
-    public ID renewID(final Context ctx, final String IDNumber, final String address, final String fullName,
-                      final String job, final String maritalStatus, final String personalPicture){
+    public ID renewID(final Context ctx, final String IDNumber, final String job, final String maritalStatus){
 
         ChaincodeStub stub = ctx.getStub();
 
@@ -161,7 +163,6 @@ public class IDContractHome implements ContractInterface {
 
         if (idState.isEmpty()) {
             String errorMessage = String.format("ID %s does not exist", IDNumber);
-            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
         }
 
@@ -169,8 +170,8 @@ public class IDContractHome implements ContractInterface {
 
         String ed = String.valueOf(setExpireDate());
 
-        ID newID = new ID(id.getIDNumber(), address, fullName, id.getGender(), id.getReligion(),
-                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, personalPicture);
+        ID newID = new ID(id.getIDNumber(), id.getAddress(), id.getFullName(), id.getGender(), id.getReligion(),
+                job, maritalStatus, id.getNationality(), id.getDateOfBirth(), ed, false, id.getPersonalPicture());
 
         newID.validateID();
 
@@ -180,5 +181,4 @@ public class IDContractHome implements ContractInterface {
         return newID;
 
     }
-
 }

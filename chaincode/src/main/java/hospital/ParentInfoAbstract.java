@@ -16,10 +16,14 @@ abstract public class ParentInfoAbstract {
     @Property()
     public String nationality;
 
+    @Property()
+    public String idNumber;
+
 
     public String getFullName(){ return fullName; }
     public String getReligion(){ return religion; }
     public String getNationality(){ return nationality; }
+    public String getIdNumber(){ return idNumber; }
 
     public void validateParentInfo(){
         ValidateInfo validateInfo = new ValidateInfo();
