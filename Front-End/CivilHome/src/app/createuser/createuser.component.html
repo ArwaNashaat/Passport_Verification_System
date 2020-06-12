@@ -8,39 +8,23 @@
         Please Enter Valid ID - Full Name (4)
     </div>
     <br><br>
-
     <div class="container">
-
         <div class="form-group">
             <label for="FirstName">Full Name</label>
-            <input type="text" class="form-control" name="FN" [(ngModel)]="FullName" required minlength="1">
+            <input type="text" class="form-control" disabled value="{{birthCert.fullName}}">
         </div>
         <div class="form-row">
+            <div class="form-group col-md-6">    
+                <label for="inputAddress2">Address</label>
+                <input type="text" class="form-control" name="ADD" [(ngModel)]="Address" required autofocus>
+            </div>
             <div class="form-group col-md-6">
-                <label for="ID">ID</label>
-                <input type="number" class="form-control" name="ID" [(ngModel)]="ID" required autofocus>
-            </div>
-            <div class="form-group col-md-6 ">
                 <label for="Gender">Religion</label>
-                <select [(ngModel)]="Religion" class="form-control" name="Religion" required autofocus>
-                    <option selected value="Islam">Islam</option>
-                    <option value="Christianity">Christianity</option>
-                    <option value="Judaism">Judaism</option>
-                </select>
+                <input class="form-control" type="text" disabled value="{{birthCert.religion}}" >
             </div>
+
         </div>
 
-        <div class="form-group">
-            <label for="inputAddress2">Address</label>
-            <input type="text" class="form-control" name="ADD" [(ngModel)]="Address" required autofocus>
-        </div>
-        <div class="form-group">
-            <label for="Marital Status">Marital Status</label>
-            <select [(ngModel)]="mStatus" class="form-control" name="mStatus" required autofocus>
-                <option selected value="Single">Single</option>
-                <option value="Married">Married</option>
-            </select>
-        </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="Job">Job</label>
@@ -48,23 +32,32 @@
             </div>
             <div class="form-group col-md-4 ">
                 <label for="Gender">Gender</label>
-                <select [(ngModel)]="Gender" class="form-control" name="Gender" required autofocus>
-                    <option selected value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
+                <input class="form-control" type="text" disabled value="{{birthCert.gender}}">
             </div>
             <div class="form-group col-md-4">
-                <label for="Nationality">Nationality</label>
-                <input type="text" class="form-control" name="JB" [(ngModel)]="Nationality" required autofocus>
+                <label for="Marital Status">Marital Status</label>
+                <select [(ngModel)]="mStatus" class="form-control" name="mStatus" required autofocus>
+                    <option selected value="Single">Single</option>
+                    <option value="Married">Married</option>
+                </select>
             </div>
         </div>
-        <div class="form-group">
-            <label for="DOB">Date of Birth</label>
-            <input type="date" class="form-control" name="DOB" [(ngModel)]="DOB" required autofocus>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="DOB">Date of Birth</label>
+                <input type="date" class="form-control" required autofocus disabled
+                    value="{{birthCert.dateOfBirth}}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="Nationality">Nationality</label>
+                <input type="text" class="form-control" required autofocus disabled
+                    value="{{birthCert.nationality}}">
+            </div>
         </div>
+        <br>
         <button type="submit" class="btn btn-outline-secondary btn-block" (click)="Create()">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="this.CreateUser.Loading"></span>
-            <span *ngIf="!this.CreateUser.Loading"> Create</span>
+            <span *ngIf="!this.CreateUser.Loading"> Create ID </span>
         </button>
         <a href="#" class="btn btn-outline-danger btn-block">Cancel</a>
     </div>

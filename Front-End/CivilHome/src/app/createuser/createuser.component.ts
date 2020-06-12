@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginServiceService } from '../services/login-service.service';
-import { ID } from '../info-page/info-page.component';
+import { ID, BirthCertificate } from '../info-page/info-page.component';
 import { CreateUserService } from '../services/create-user.service';
 import { ShareImageService } from '../services/share-image.service';
 import {RestService} from '../services/rest.service';
@@ -13,7 +13,7 @@ import {RestService} from '../services/rest.service';
 })
 export class CreateuserComponent implements OnInit {
   FullName: string;
-  ID: number;
+  ID: string;
   Address: string;
   Job: string;
   Gender: string;
@@ -22,45 +22,73 @@ export class CreateuserComponent implements OnInit {
   Religion: string
   Invalid: boolean;
   mStatus: string;
-  Nationality: string
   image: any;
-  newID: ID
+  newID: ID;
+  birthCert: BirthCertificate;
+  SharedImage: string;
+
 
   constructor(private router: Router, public CreateUser: CreateUserService, private sharedImageService: ShareImageService,
-    public rest: RestService) {
-    this.FullName = "";
-    this.ID = 0;
+    public rest: RestService, public LoginService: LoginServiceService) {
+    this.ID = "0";
     this.Address = "";
     this.Job = ""
-    this.Gender = "";
-    this.DOB = "";
     this.image = this.sharedImageService.getImage();
-
+    this.birthCert = this.LoginService.birthCertificate
   }
 
   ngOnInit(): void {
+
   }
 
-  SharedImage: string;
   async Create() {
-    alert(this.image)
-    if (this.FullName.length != 0 && this.ID &&
-      this.Address.length != 0 && this.Job.length != 0 && this.Nationality.length != 0) {
+    if (this.Address.length != 0 && this.Job.length != 0) {
 
-      this.newID = new ID(this.ID.toString(), this.Address, this.FullName, this.Gender, this.Religion,
-        this.Job, this.mStatus, this.Nationality, this.DOB.toString(),
+      this.newID = new ID(this.ID,this.Address, this.birthCert.fullName, this.birthCert.gender, this.birthCert.religion,
+        this.Job, this.mStatus,this.birthCert.nationality,this.birthCert.dateOfBirth,
         "0", false, this.image)
-        alert("after")
-        //const v = await this.rest.CreateNewUser(this.newID)
+        
         const t = await this.CreateUser.CreateNewUser(this.newID)
       if (t) {
         alert("ID Created Successfully!")
-        this.router.navigate([''])
+        this.LoginService.LoggedIn = true;
+        sessionStorage.setItem("UserID",JSON.stringify(this.newID))
+        this.Login();
       }
     }
     else {
       this.Invalid = true
     }
+  }
+
+  async Login() {
+
+    let promise = new Promise((resolve, reject) => {
+      this.CreateUser.Loading = true
+      this.LoginService.getInfo(this.CreateUser.idNumber)
+        .toPromise()
+        .then(
+          res => {
+            try {
+              resolve(res)
+              
+              this.LoginService.SessionID = res
+              this.LoginService.LoggedIn = true
+              this.CreateUser.Loading = false
+              this.router.navigate(['Infopage/', this.CreateUser.idNumber])
+            }
+            catch (e) {
+              this.CreateUser.Loading = false
+              reject(false);
+            }
+          },
+          msg => {
+            this.CreateUser.Loading = false
+            reject(msg);
+          }
+        );
+    });
+    
   }
 
 }

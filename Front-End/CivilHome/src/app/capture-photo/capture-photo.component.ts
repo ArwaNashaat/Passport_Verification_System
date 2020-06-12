@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2} from '@angular/core';
 import { Router } from '@angular/router';
 import {ShareImageService} from '../services/share-image.service';
+import { LoginServiceService } from '../services/login-service.service';
+import { RestService } from '../services/rest.service';
+import { CreateUserService } from '../services/create-user.service';
 
 
 @Component({
@@ -15,8 +18,14 @@ export class CapturePhotoComponent implements OnInit {
   videoWidth = 0;
   videoHeight = 0;
   public image: string;
+  Invalid =false;
+  InvalidID = false
+  ID:number
   
-  constructor(private router :Router, private renderer: Renderer2, private sharedImageService: ShareImageService) { 
+  Loading = false;
+  LoadingRenew = false;
+
+  constructor(private router :Router, public CreateUser: CreateUserService, public rest: RestService,private renderer: Renderer2, private sharedImageService: ShareImageService, private LoginService: LoginServiceService) { 
     this.image = "";
   }
   
@@ -64,12 +73,79 @@ export class CapturePhotoComponent implements OnInit {
     this.sharedImageService.setImage(this.image);
   }
   
-  nextPage(){
-    this.stopCamera();
-    this.router.navigate(['CreateUser'])
-  }
   stopCamera(){
-    navigator.mediaDevices.getUserMedia(this.constraints).then(stop);
-  }
+    var vid = document.getElementById("vid");
+    navigator.mediaDevices.getUserMedia(this.constraints).then((track => track.removeTrack));
 
+    //navigator.mediaDevices.getUserMedia(this.constraints).then(stop);
+  }
+  
+  async searchID(){
+    this.stopCamera()
+    if (this.image != "") {
+      this.Loading = true
+        const t = await this.rest.searchID(this.image)
+        this.Loading = false
+      if (t && this.rest.idNumber==="No Match") {
+        alert("No ID Found")
+      }
+      else{
+        alert("ID Confirmed")
+        this.router.navigate(['EnterChildName'])
+      }
+    }
+    else {
+      alert("Please Capture your Photo First")
+      this.Invalid = true
+    }
+  }
+  async renewID(){
+    if (this.image != "") {
+      this.LoadingRenew = true
+        const t = await this.rest.searchID(this.image)
+        this.LoadingRenew = false
+      if (t) {
+        this.Login(this.rest.idNumber)
+      }
+    }
+    else {
+      this.Invalid = true
+    }
+  }
+  
+  async Login(idNumber: string) {
+    this.LoadingRenew = true
+
+    if (idNumber) {
+      let promise = new Promise((resolve, reject) => {
+
+        this.LoginService.getInfo(idNumber)
+          .toPromise()
+          .then(
+            res => {
+              try {
+                resolve(res)                
+                this.LoginService.SessionID = res
+                this.LoginService.LoggedIn = true
+                sessionStorage.setItem("UserID",JSON.stringify(res))
+                alert("ID Confirmed")
+                this.router.navigate(['RenewUser'])
+              }
+              catch (e) {
+                reject(false);
+              }
+            },
+            msg => {
+              this.InvalidID = true
+              this.LoadingRenew = false
+              reject(msg);
+            }
+          );
+      });
+    }
+    else {
+      this.Invalid = true;
+      this.LoadingRenew = false
+    }
+  }
 }

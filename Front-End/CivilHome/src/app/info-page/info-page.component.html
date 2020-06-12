@@ -1,23 +1,56 @@
-<div class="container">
-    <div class="card bg-light mb-3" style="max-width: 350px; max-height: 600px;">
+<div class="container col-md-8">
+    <div class="card bg-light mb-3">
         <img class="card-img-top" src="{{myID.personalPicture}}" alt="Card image cap">
         <div class="card-body ">
-            <h5 class="card-title"><b>Full Name</b> : {{myID.fullName}}</h5>
-            <label for="ID"><b>ID</b> : {{ID}}</label><br>
-            <label for="Gender"><b>Gender </b> : {{myID.gender}}</label><br>
-            <label for="Address"><b>Address</b> : {{myID.address}}</label><br>
-            <label for="DOB"><b>Date Of birth</b> : {{myID.dateOfBirth}}</label><br>
-            <label for="Job"><b>Job</b> : {{myID.job}}</label><br>
-            <label for="Nationality"><b>Nationality</b> : {{myID.nationality}}</label>
-            <br>
-            <label for="MarStatus"><b>Marital Status</b> : {{myID.maritalStatus}}</label>
-            <br>
-            <label for="religion"><b>Religion</b> : {{myID.religion}}</label>
-            <br>
-            <label for="exDate"><b>Expiry Date</b> : {{myID.expireDate}}</label>
+            <div class="container">
+
+                <div class="form-group">
+                    <label for="FirstName">Full Name</label>
+                    <input type="text" class="form-control" disabled value="{{myID.fullName}}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress2">Address</label>
+                        <input type="text" class="form-control" disabled value="{{myID.address}}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Gender">Religion</label>
+                        <input class="form-control" type="text" value="{{myID.religion}}" disabled>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="Job">Job</label>
+                        <input type="text" class="form-control" disabled value="{{myID.job}}" required autofocus>
+                    </div>
+                    <div class="form-group col-md-4 ">
+                        <label for="Gender">Gender</label>
+                        <input class="form-control" type="text" disabled value="{{myID.gender}}">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="Marital Status">Marital Status</label>
+                        <input class="form-control" type="text" name="MS" id="MS" value="{{myID.maritalStatus}}"
+                            disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="DOB">Date of Birth</label>
+                        <input type="date" class="form-control" required autofocus disabled
+                            value="{{myID.dateOfBirth}}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Nationality">Nationality</label>
+                        <input type="text" class="form-control" required autofocus disabled
+                            value="{{myID.nationality}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary btn-block" style=" font-size: 18px;" (click)="renew()" *ngIf="this.expired">Renew ID</a>
         </div>
     </div>
-    <a class="btn btn-outline-secondary btn-sm" style="width:350px ; height: 40px; font-size: 18px"
-        (click)="renew()">Renew ID</a>
-
 </div>

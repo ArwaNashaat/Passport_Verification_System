@@ -6,12 +6,18 @@
                 <video #video class="vid" autoplay></video>
             </div>
             <div class="pb-2">
+                <button class="btn btn-primary" (click)=renewID()>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="LoadingRenew"></span>
+                    <span *ngIf="!LoadingRenew"> Renew ID </span>
+                </button>
                 <button class="btn btn-primary" (click)="capture()">Capture Image</button>
-                <button class="btn btn-primary" (click)="nextPage()">Next Page</button>
+                <button class="btn btn-primary" (click)=searchID()>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="Loading"></span>
+                    <span *ngIf="!Loading"> Search Parent's ID </span>
+                </button>
             </div>
             <div class="p-1">
                 <canvas #canvas class="vid"></canvas>
-
                 <ul>
                     <li *ngFor="let c of image">
                         <img src="{{ c }}" height="50" />

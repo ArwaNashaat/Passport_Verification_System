@@ -19,8 +19,46 @@ export class ID {
   ) {
 
   }
+  
 }
 
+export class BirthCertificate{
+  constructor(
+    public  fullName : string,
+    public  religion: string,
+    public  gender : string,
+    public  idNumber: string,
+    public  dateOfBirth: string ,
+    public  birthPlace:string,
+    public  nationality:string,
+
+    public fatherInfo: FatherInfo,
+
+    public motherInfo: MotherInfo
+  ){}
+}
+
+export class FatherInfo{
+  constructor(
+    public  fullName:string,
+
+    public  nationality:string,
+
+    public  religion:string
+
+  ){}
+}
+
+export class MotherInfo{
+  constructor(
+    public  fullName:string,
+
+    public  nationality:string,
+
+    public  religion:string
+
+  ){}
+}
 
 @Component({
   selector: 'app-info-page',
@@ -32,10 +70,12 @@ export class InfoPageComponent implements OnInit {
   constructor(private route : ActivatedRoute , private LoginService : LoginServiceService) { }
   ID:number
   myID : ID
+  expired :boolean
 
   ngOnInit(): void {
     this.ID = this.route.snapshot.params['ID']
-    this,this.myID = this.LoginService.SessionID
+    this.myID = JSON.parse(sessionStorage.getItem("UserID"))
+    this.expired = this.myID.isExpired
  }
 
   renew(){

@@ -15,6 +15,7 @@ export class NavbarComponent implements OnInit {
   SignOut(){
     this.LoginService.SessionID = null
     this.LoginService.LoggedIn = false;
+    sessionStorage.removeItem("UserID")
   }
 
 }
