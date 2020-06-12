@@ -12,12 +12,16 @@ import { NavbarComponent} from './navbar/navbar.component';
 import { AddMedicalReportComponent } from './add-medical-report/add-medical-report.component'
 import { HttpClientModule } from '@angular/common/http';
 import { CreateCertificateComponent } from './create-certificate/create-certificate.component';
+import { CapturePhotoComponent } from './capture-photo/capture-photo.component';
+import { ChildNameComponent } from './child-name/child-name.component';
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'Infopage/:ID', component: InfoPageComponent },
   { path: 'Report/:ID', component: AddMedicalReportComponent },
-  { path: 'CreateCertificate', component: CreateCertificateComponent}
+  { path: 'CreateCertificate', component: CreateCertificateComponent},
+  { path: 'CapturePhoto', component: CapturePhotoComponent},
+  { path: 'EnterChildName', component: ChildNameComponent}
   
   
 ];
@@ -29,7 +33,9 @@ const appRoutes: Routes = [
     LoginComponent,
     NavbarComponent,
     AddMedicalReportComponent,
-    CreateCertificateComponent
+    CreateCertificateComponent,
+    CapturePhotoComponent,
+    ChildNameComponent
   ],
   imports: [
     BrowserModule,

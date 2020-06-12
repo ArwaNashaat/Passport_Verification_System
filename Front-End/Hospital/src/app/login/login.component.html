@@ -10,12 +10,8 @@
 
 <div class="container sign-in">
   <h1> <b>Hospital</b> </h1>
-  <input type="text" class="form-control" placeholder="User ID" [(ngModel)]="ID" required autofocus>
-  <br>
-  <button class="btn btn-lg  buttons btn-block" (click)=Login()>
-    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="Loading"></span>
-    <span *ngIf="!Loading"> Search</span>
-  </button>
+  <br><br>
+  <a routerLink="CapturePhoto" class="btn btn-lg buttons btn-block">Search for Birth Certificate</a>
 
   <a routerLink="CreateCertificate" class="btn btn-lg buttons btn-block">Create Certificate</a>
   <br>

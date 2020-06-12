@@ -1,27 +1,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BirthCertificate } from '../info-page/info-page.component';
-import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
+import { Router } from '@angular/router';
+import { ShareImageService } from './share-image.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CertificateService {
+export class RestService {
+
   Loading = false
   InvalidID_Name = false;
-  constructor(private http:HttpClient) { }
+  idNumber: string
 
-  CreateCertificate(newCT : BirthCertificate){
+  constructor(private http: HttpClient , private router : Router , private sharedImage : ShareImageService) {
+
+  }
+  CreateNewUser(imageToSend: String) {
+    const imageJson = {image: imageToSend};
+  
     this.InvalidID_Name = false;
-    this.Loading = true;
+    this.Loading = true
     let promise = new Promise((resolve, reject) => {
-      
-      this.http.post(`http://localhost:8080/Hospital/issueCertificate`, newCT)
+     
+      this.http.post(`http://127.0.0.1:8000/image`, imageJson)
         .toPromise()
         .then(
           res => {
             try {
               resolve(res);
+              this.idNumber = res["image_name"];
+              alert(this.idNumber)
             }
             catch (e) {
               reject(false);
@@ -36,4 +44,5 @@ export class CertificateService {
     });
     return promise;
   }
+  
 }

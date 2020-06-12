@@ -15,7 +15,7 @@ export class CreateCertificateComponent implements OnInit {
   fatherInfo: FatherInfo;
   motherInfo: MotherInfo;
   FullName: string;
-  ID: number;
+  ID: string;
   birthplace: string;
   Gender: string;
   DOB: FormDataEntryValue;
@@ -32,6 +32,7 @@ export class CreateCertificateComponent implements OnInit {
   constructor(private router: Router, public CreateCertificate: CertificateService) {
     this.Invalid = false
     this.FullName = ""
+    this.ID = "0"
     this.fatherFullName = ""
     this.motherFullName = ""
     this.Nationality = ""
@@ -61,11 +62,6 @@ export class CreateCertificateComponent implements OnInit {
       this.Invalid = true
       return
     }
-    if (!this.ID) {
-      this.ErrMessage = "Please Enter Valid ID"
-      this.Invalid = true
-      return
-    }
     if (this.Nationality.length == 0) {
       this.ErrMessage = "Please Enter Valid Nationality"
       this.Invalid = true
@@ -73,16 +69,6 @@ export class CreateCertificateComponent implements OnInit {
     }
     if (this.birthplace.length == 0) {
       this.ErrMessage = "Please Enter Valid Birtplace"
-      this.Invalid = true
-      return
-    }
-    if (this.fatherNation.length == 0) {
-      this.ErrMessage = "Please Enter Valid Father's nationality"
-      this.Invalid = true
-      return
-    }
-    if (this.motherNation.length == 0) {
-      this.ErrMessage = "Please Enter Valid Mother's Nationality"
       this.Invalid = true
       return
     }

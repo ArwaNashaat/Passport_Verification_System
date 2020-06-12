@@ -9,7 +9,7 @@ import { LoginServiceService } from '../services/login-service.service';
 })
 export class LoginComponent implements OnInit {
   Invalid =false;
-  ID:number
+  ID:string
   InvalidID = false;
   Loading = false;
   
@@ -21,38 +21,5 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  async Login() {
-    this.Loading = true
-
-    if (this.ID) {
-      let promise = new Promise((resolve, reject) => {
-
-        this.LoginService.getInfo(this.ID)
-          .toPromise()
-          .then(
-            res => {
-              try {
-                resolve(res);
-                this.LoginService.birthCertificate = res
-                this.LoginService.LoggedIn = true
-                this.router.navigate(['Infopage/', this.ID])
-              }
-              catch (e) {
-                reject(false);
-              }
-            },
-            msg => {
-              this.InvalidID = true
-              this.Loading = false
-              reject(msg);
-            }
-          );
-      });
-    }
-    else {
-      this.Invalid = true;
-      this.Loading = false
-    }
-  }
-
+ 
 }

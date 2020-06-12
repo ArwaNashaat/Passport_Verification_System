@@ -11,8 +11,9 @@ export class LoginServiceService {
   birthCertificate : BirthCertificate
   constructor(private http: HttpClient) { }
   
-  getInfo(ID: number) {
-    return this.http.get<BirthCertificate>(`http://localhost:8080/Hospital/getCertificate/${ID}`)
+  getBirthCertificate(parentIDNumber: string,childName: string) {
+    
+    return this.http.get<BirthCertificate>(`http://localhost:8080//Hospital/getBCByParentID/${parentIDNumber}/${childName}`)
   }
 
 }
