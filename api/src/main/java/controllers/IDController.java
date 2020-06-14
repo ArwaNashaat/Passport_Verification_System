@@ -42,17 +42,10 @@ public class IDController {
 
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping(value="/Airport/renewID", consumes= MediaType.APPLICATION_JSON_VALUE)
-   // public boolean getTest(@RequestBody ObjectNode objectNode) {
-        // And then you can call parameters from objectNode
-     //   String strOne = objectNode.get("str1").asText();
-       // String strTwo = objectNode.get("str2").asText();
     public String renewID(@RequestBody ObjectNode objectNode) throws IOException {
         String currentID = objectNode.get("currnetID").asText();
         String job = objectNode.get("job").asText();
         String maritalStatus = objectNode.get("maritalStatus").asText();
-        System.out.println(currentID);
-        System.out.println(job);
-        System.out.println(maritalStatus);
 
         Services services = new Services();
         return services.renewID(currentID, job, maritalStatus);

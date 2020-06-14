@@ -9,15 +9,15 @@ import java.nio.file.Paths;
 
 @Component
 public class ConfigurationComponent {
-    private final String walletPathString = "/home/arwa/.fabric-vscode/environments/airport/wallets/Org1";
-    private final String networkConfigPathString = "/home/arwa/.fabric-vscode/environments/airport/gateways/Org1/Org1.json";
+    private final String walletPathString = System.getenv("WALLET_PATH");
+    private final String networkConfigPathString = System.getenv("CONNECTION_PROFILE_PATH");
     private final String orgID = "org1Admin";
     private final String channleName = "mychannel";
     private final String chaincodeId = "Chaincode";
-    //private String contractName = "IDContract";
 
     public Gateway setupGatewayConfigurations() throws IOException {
-
+        System.out.println(walletPathString);
+        System.out.println(networkConfigPathString);
         Path walletPath = Paths.get(walletPathString);
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
 

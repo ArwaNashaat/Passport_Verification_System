@@ -5,26 +5,24 @@ import chaincodes.BirthCertificate;
 import chaincodes.ID;
 import com.owlike.genson.Genson;
 import components.ConfigurationComponent;
-import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.gateway.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.concurrent.TimeoutException;
 
 @Service
 public class Services {
     Genson genson = new Genson();
+    String picturePath = System.getenv("PICTURE_PATH");
+
     public String renewID(String currentID, String job, String maritalStatus) throws IOException{
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
@@ -70,7 +68,7 @@ public class Services {
     }
 
     public String getPicture(String idNumber) throws IOException {
-        String filePath = "../Pictures";
+        String filePath = picturePath;
         File file = new File(filePath);
         String image = null;
 
@@ -131,7 +129,7 @@ public class Services {
             Integer lastIDInt = Integer.parseInt(new String(lastID))+1;
             String lastIDString = lastIDInt.toString();
 
-            String path = "../Pictures/"+lastIDString+".png";
+            String path = picturePath+lastIDString+".png";
 
             contract.submitTransaction("issueID", id.getAddress(), id.getFullName(),
                     id.getGender(),id.getReligion(),id.getJob(), id.getMaritalStatus(),id.getDateOfBirth(), path);
@@ -170,12 +168,9 @@ public class Services {
 
     public boolean savePicture(String picture, String picName) throws IOException {
         picture = picture.replace("data:image/png;base64,","");
-        //id.setPersonalPicture(x);
 
         byte[] decodedImg = Base64.getDecoder().decode(picture);
-        //"/path/to/imageDir", "myImage.jpg"
-        //"/home/arwa/go/fabric-samples/Passport_Verification_System/api"
-        Path destinationFile = Paths.get("../Pictures",picName+".png");
+        Path destinationFile = Paths.get(picturePath,picName+".png");
         Files.write(destinationFile, decodedImg);
 
         return true;
