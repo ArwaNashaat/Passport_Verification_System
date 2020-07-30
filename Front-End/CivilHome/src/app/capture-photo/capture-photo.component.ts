@@ -129,7 +129,13 @@ export class CapturePhotoComponent implements OnInit {
                 this.LoginService.LoggedIn = true
                 sessionStorage.setItem("UserID",JSON.stringify(res))
                 alert("ID Confirmed")
-                this.router.navigate(['RenewUser'])
+                if(this.LoginService.SessionID[0].isExpired===false){
+                  alert("Can't renew, ID will expire in "+this.LoginService.SessionID[0].expireDate)
+                  this.LoadingRenew = false
+
+                  this.router.navigate([''])
+                }
+                else {this.router.navigate(['RenewUser'])}
               }
               catch (e) {
                 reject(false);

@@ -30,7 +30,7 @@ export class RenewUserComponent implements OnInit {
     this.ID = this.rest.idNumber;
     this.Job = ""
     this.image = this.sharedImageService.getImage();
-    this.currentID = this.LoginService.SessionID
+    this.currentID = this.LoginService.SessionID[0]
   }
 
   ngOnInit(): void {

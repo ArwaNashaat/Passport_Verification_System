@@ -1,56 +1,73 @@
+<div *ngIf="myID.length!=1" [style.color]="'red'">
+    <h2>ID is illegally updated, Scroll Down to see the different versions of the same ID </h2>
+</div>
 <div class="container col-md-8">
-    <div class="card bg-light mb-3">
-        <img class="card-img-top" src="{{myID.personalPicture}}" alt="Card image cap">
-        <div class="card-body ">
-            <div class="container">
 
-                <div class="form-group">
-                    <label for="FirstName">Full Name</label>
-                    <input type="text" class="form-control" disabled value="{{myID.fullName}}">
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="inputAddress2">Address</label>
-                        <input type="text" class="form-control" disabled value="{{myID.address}}">
+    <img class="card-img-top" src="{{myID[0].personalPicture}}" alt="Card image cap">
+
+    <div *ngFor="let id of myID">
+        <div class="card bg-light mb-3">
+
+
+            <div class="card-body">
+                <div class="container">
+
+                    <div class="form-group">
+                        <label for="FirstName">Full Name</label>
+                        <input type="text" [style.color]="myID[0].fullName === id.fullName ? 'black' : 'red'"
+                            class="form-control" disabled value="{{id.fullName}}">
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="Gender">Religion</label>
-                        <input class="form-control" type="text" value="{{myID.religion}}" disabled>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputAddress2">Address</label>
+                            <input type="text" [style.color]="myID[0].address === id.address ? 'black' : 'red'"
+                                class="form-control" disabled value="{{id.address}}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Gender">Religion</label>
+                            <input class="form-control"
+                                [style.color]="myID[0].religion === id.religion ? 'black' : 'red'" type="text"
+                                value="{{id.religion}}" disabled>
+                        </div>
+
                     </div>
 
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="Job">Job</label>
-                        <input type="text" class="form-control" disabled value="{{myID.job}}" required autofocus>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="Job">Job</label>
+                            <input type="text" [style.color]="myID[0].job === id.job ? 'black' : 'red'"
+                                class="form-control" disabled value="{{id.job}}" required autofocus>
+                        </div>
+                        <div class="form-group col-md-4 ">
+                            <label for="Gender">Gender</label>
+                            <input class="form-control" [style.color]="myID[0].gender === id.gender ? 'black' : 'red'"
+                                type="text" disabled value="{{id.gender}}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="Marital Status">Marital Status</label>
+                            <input class="form-control"
+                                [style.color]="myID[0].maritalStatus === id.maritalStatus ? 'black' : 'red'" type="text"
+                                name="MS" id="MS" value="{{id.maritalStatus}}" disabled>
+                        </div>
                     </div>
-                    <div class="form-group col-md-4 ">
-                        <label for="Gender">Gender</label>
-                        <input class="form-control" type="text" disabled value="{{myID.gender}}">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="Marital Status">Marital Status</label>
-                        <input class="form-control" type="text" name="MS" id="MS" value="{{myID.maritalStatus}}"
-                            disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="DOB">Date of Birth</label>
-                        <input type="date" class="form-control" required autofocus disabled
-                            value="{{myID.dateOfBirth}}">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="Nationality">Nationality</label>
-                        <input type="text" class="form-control" required autofocus disabled
-                            value="{{myID.nationality}}">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="DOB">Date of Birth</label>
+                            <input type="date" [style.color]="myID[0].dateOfBirth === id.dateOfBirth ? 'black' : 'red'"
+                                class="form-control" required autofocus disabled value="{{id.dateOfBirth}}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Nationality">Nationality</label>
+                            <input type="text" [style.color]="myID[0].nationality === id.nationality ? 'black' : 'red'"
+                                class="form-control" required autofocus disabled value="{{id.nationality}}">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <a class="btn btn-outline-secondary btn-block" style=" font-size: 18px;" (click)="renew()" *ngIf="this.expired">Renew ID</a>
+            <div>
+                <a class="btn btn-outline-secondary btn-block" style=" font-size: 18px;" (click)="renew()"
+                    *ngIf="this.expired">Renew ID</a>
+            </div>
         </div>
     </div>
 </div>

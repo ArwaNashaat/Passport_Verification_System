@@ -69,14 +69,15 @@ export class InfoPageComponent implements OnInit {
 
   constructor(private route : ActivatedRoute , private LoginService : LoginServiceService) { }
   ID:number
-  myID : ID
+  myID : ID[]
   expired :boolean
 
   ngOnInit(): void {
     this.ID = this.route.snapshot.params['ID']
     this.myID = JSON.parse(sessionStorage.getItem("UserID"))
-    this.expired = this.myID.isExpired
- }
+    this.expired = this.myID[0].isExpired
+  }
+
 
   renew(){
     

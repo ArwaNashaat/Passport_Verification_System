@@ -8,7 +8,7 @@ import { ID, BirthCertificate } from '../info-page/info-page.component';
 export class LoginServiceService {
 
   LoggedIn = false;
-  SessionID : ID
+  SessionID : ID[]
   birthCertificate : BirthCertificate
   constructor(private http: HttpClient) { }
   
@@ -17,8 +17,7 @@ export class LoginServiceService {
     return this.http.get<BirthCertificate>(`http://localhost:8080//Hospital/getBCByParentID/${parentIDNumber}/${childName}`)
   }
 
-  getInfo(IDNumber: string) {
-    return this.http.get<ID>(`http://localhost:8080/Airport/getInfo/${IDNumber}`)
+  getInfo(IDNumber: String) {
+    return this.http.get<ID[]>(`http://localhost:8080/Airport/getInfo/${IDNumber}`)
   }
-
 }
