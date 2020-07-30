@@ -82,16 +82,12 @@ export class CapturePhotoComponent implements OnInit {
 
   
   async searchID(){
-    //alert(this.image)
     if (this.image != null) {
       this.Loading = true
-        //const v = await this.rest.CreateNewUser(this.newID)
         const t = await this.rest.CreateNewUser(this.image)
         this.Loading = false
       if (t) {
         this.Login(this.rest.idNumber)
-        alert("ID Created Successfully!")
-        //this.router.navigate([''])
       }
     }
     else {
@@ -114,6 +110,11 @@ export class CapturePhotoComponent implements OnInit {
                 
                 this.LoginService.SessionID = res
                 this.LoginService.LoggedIn = true
+                //navigate to error page to display the difference
+                if(this.LoginService.SessionID.length != 1){
+
+                }
+                sessionStorage.setItem("UserID",JSON.stringify(res))
                 this.router.navigate(['Infopage/', idNumber])
               }
               catch (e) {

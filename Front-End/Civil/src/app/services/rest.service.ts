@@ -30,7 +30,6 @@ export class RestService {
             try {
               resolve(res);
               this.idNumber = res["image_name"];
-              alert(this.idNumber)
             }
             catch (e) {
               reject(false);

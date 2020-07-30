@@ -45,14 +45,15 @@ export class CreateuserComponent implements OnInit {
     if (this.FullName.length != 0 &&
       this.Address.length != 0 && this.Job.length != 0) {
 
-      this.newID = new ID(this.Address, this.FullName, this.Gender, this.Religion,
+      this.newID = new ID(this.ID,this.Address, this.FullName, this.Gender, this.Religion,
         this.Job, this.mStatus,"Egyptian",this.DOB.toString(),
         "0", false, this.image)
         
         const t = await this.CreateUser.CreateNewUser(this.newID)
       if (t) {
         alert("ID Created Successfully!")
-
+        this.LoginService.LoggedIn = true;
+        sessionStorage.setItem("UserID",JSON.stringify(this.newID))
         this.Login();
       }
     }
@@ -65,7 +66,7 @@ export class CreateuserComponent implements OnInit {
 
     let promise = new Promise((resolve, reject) => {
       this.CreateUser.Loading = true
-      this.LoginService.getInfo(this.ID)
+      this.LoginService.getInfo(this.CreateUser.idNumber)
         .toPromise()
         .then(
           res => {
@@ -75,7 +76,7 @@ export class CreateuserComponent implements OnInit {
               this.LoginService.SessionID = res
               this.LoginService.LoggedIn = true
               this.CreateUser.Loading = false
-              this.router.navigate(['Infopage/', this.ID])
+              this.router.navigate(['Infopage/', this.CreateUser.idNumber])
             }
             catch (e) {
               this.CreateUser.Loading = false

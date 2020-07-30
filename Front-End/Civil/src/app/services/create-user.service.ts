@@ -8,7 +8,7 @@ import { ShareImageService } from './share-image.service';
   providedIn: 'root'
 })
 export class CreateUserService {
-
+  idNumber: string
   Loading = false
   InvalidID_Name = false;
   constructor(private http: HttpClient , private router : Router , private sharedImage : ShareImageService) {
@@ -23,7 +23,8 @@ export class CreateUserService {
         .then(
           res => {
             try {
-              resolve(res);
+              resolve(res); 
+              this.idNumber = res.toString()
               this.Loading = false
             }
             catch (e) {

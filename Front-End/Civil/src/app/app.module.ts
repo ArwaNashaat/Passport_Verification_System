@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
 import { InfoPageComponent } from './info-page/info-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CreateuserComponent } from './createuser/createuser.component';
@@ -14,7 +13,7 @@ import {ShareImageService} from './services/share-image.service';
 
 
 const appRoutes: Routes = [
-  { path: 'CapturePhoto', component: LoginComponent },
+
   { path: 'Infopage/:ID', component: InfoPageComponent },
   { path: 'CreateUser', component: CreateuserComponent },
   { path: '', component: CapturePhotoComponent}
@@ -24,7 +23,6 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
     InfoPageComponent,
     NavbarComponent,
     CreateuserComponent,

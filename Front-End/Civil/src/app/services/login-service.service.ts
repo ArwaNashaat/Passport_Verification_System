@@ -8,11 +8,11 @@ import { ID } from '../info-page/info-page.component';
 export class LoginServiceService {
 
   LoggedIn = false;
-  SessionID : ID
+  SessionID : ID[]
   constructor(private http: HttpClient) { }
   
   getInfo(ID: String) {
-    return this.http.get<ID>(`http://localhost:8080/Airport/getInfo/${ID}`)
+    return this.http.get<ID[]>(`http://localhost:8080/Airport/getInfo/${ID}`)
   }
   
 }
