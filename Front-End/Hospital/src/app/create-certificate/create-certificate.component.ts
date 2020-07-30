@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BirthCertificate, MotherInfo, FatherInfo } from '../info-page/info-page.component';
 import { Router } from '@angular/router';
 import { CertificateService } from '../services/certificate.service';
+import { LoginComponent } from '../login/login.component';
+import { LoginServiceService } from '../services/login-service.service';
 
 
 @Component({
@@ -29,7 +31,7 @@ export class CreateCertificateComponent implements OnInit {
   motherReligion: string;
   motherFullName: string;
   ErrMessage = ""
-  constructor(private router: Router, public CreateCertificate: CertificateService) {
+  constructor(private router: Router, public CreateCertificate: CertificateService, public LoginService: LoginServiceService) {
     this.Invalid = false
     this.FullName = ""
     this.ID = "0"
@@ -85,7 +87,8 @@ export class CreateCertificateComponent implements OnInit {
     if (t) {
       alert("Birth Certificate Created Successfully!")
       this.CreateCertificate.Loading = false
-     // this.router.navigate([''])
+
+      //this.router.navigate(['Infopage/'])
     }
     this.CreateCertificate.Loading=false;
   }
