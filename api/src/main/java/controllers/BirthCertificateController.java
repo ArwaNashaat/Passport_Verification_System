@@ -34,7 +34,7 @@ public class BirthCertificateController {
         return services.issueBirthCertificate(birthCertificate);
     }
 
-    @CrossOrigin(origins = {"http://localhost:4300", "http://localhost:4200"})
+    @CrossOrigin(origins = {"http://localhost:4300", "http://localhost:4200", "http://localhost:4400"})
     @GetMapping(path = "/Hospital/getBCByParentID/{parentIDNumber}/{childName}")
     public String getBirthCertByID(@PathVariable String parentIDNumber, @PathVariable String childName) throws IOException {
         Services services = new Services();

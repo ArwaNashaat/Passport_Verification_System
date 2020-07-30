@@ -5,8 +5,9 @@ import chaincodes.BirthCertificate;
 import chaincodes.ID;
 import com.owlike.genson.Genson;
 import components.ConfigurationComponent;
-import org.hyperledger.fabric.gateway.*;
-
+import org.hyperledger.fabric.gateway.Contract;
+import org.hyperledger.fabric.gateway.ContractException;
+import org.hyperledger.fabric.gateway.Gateway;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -41,7 +42,7 @@ public class Services {
         return null;
     }
 
-    public String getID(String contractName,String ID) throws IOException {
+    public String getID(String contractName,String IDNumber) throws IOException {
 
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
@@ -51,12 +52,12 @@ public class Services {
             Contract contract = configurationComponent.getContract(gateway,contractName);
 
             byte[] result;
-            result = contract.evaluateTransaction("getID",ID);
+            result = contract.evaluateTransaction("getID",IDNumber);
 
-            ID id = genson.deserialize(result,ID.class);
+            ID[] id = genson.deserialize(result,ID[].class);
 
-            String pic = getPicture(ID);
-            id.setPersonalPicture(pic);
+            String pic = getPicture(IDNumber);
+            id[0].setPersonalPicture(pic);
 
             return genson.serialize(id);
 
@@ -64,7 +65,14 @@ public class Services {
             e.printStackTrace();
         }
 
-        return ID + "not found";
+        return IDNumber + "not found";
+    }
+
+    public boolean isIDHistoryValid(ID[] idHistory){
+        if (idHistory.length != 1){
+            return false;
+        }
+        return true;
     }
 
     public String getPicture(String idNumber) throws IOException {
@@ -175,25 +183,6 @@ public class Services {
 
         return true;
     }
-
-    /*private String getIdNumber() throws IOException {
-
-        ConfigurationComponent configurationComponent = new ConfigurationComponent();
-        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
-        try (Gateway gateway = gatewayConfig) {
-
-            Contract contract = configurationComponent.getContract(gateway,"IDContractFromHome");
-
-            byte[] result;
-            result = contract.evaluateTransaction("getLastIDNumber");
-            return new String(result);
-
-        } catch (ContractException e) {
-            e.printStackTrace();
-        }
-
-        return "No ID Found";
-    }*/
 
     public String getBC(String contractName,String ID, String childName) throws IOException {
 

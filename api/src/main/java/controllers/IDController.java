@@ -23,7 +23,7 @@ public class IDController {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4400"})
     @GetMapping(path = "/Airport/getInfo/{ID}")
     public String GetInfo(@PathVariable String ID) throws IOException {
 
@@ -32,7 +32,7 @@ public class IDController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4400", "http://localhost:4200"})
     @PostMapping(value="/Airport/IssueID", consumes= MediaType.APPLICATION_JSON_VALUE)
     public String IssueID(@RequestBody ID id) throws IOException {
 
@@ -40,7 +40,7 @@ public class IDController {
         return services.issueID(id);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
+    @CrossOrigin(origins = {"http://localhost:4400", "http://localhost:4200"})
     @PostMapping(value="/Airport/renewID", consumes= MediaType.APPLICATION_JSON_VALUE)
     public String renewID(@RequestBody ObjectNode objectNode) throws IOException {
         String currentID = objectNode.get("currnetID").asText();
