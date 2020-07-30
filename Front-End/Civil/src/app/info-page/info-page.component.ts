@@ -29,7 +29,7 @@ export class ID {
 })
 export class InfoPageComponent implements OnInit {
 
-  constructor(private route : ActivatedRoute , private LoginService : LoginServiceService) { }
+  constructor(private route : ActivatedRoute,private router :Router , private LoginService : LoginServiceService) { }
   ID:number
   myID : ID[]
   expired :boolean
@@ -41,7 +41,7 @@ export class InfoPageComponent implements OnInit {
   }
 
   renew(){
-    
+    this.router.navigate(['RenewUser'])
   }
   
 

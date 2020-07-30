@@ -110,10 +110,7 @@ export class CapturePhotoComponent implements OnInit {
                 
                 this.LoginService.SessionID = res
                 this.LoginService.LoggedIn = true
-                //navigate to error page to display the difference
-                if(this.LoginService.SessionID.length != 1){
-
-                }
+                
                 sessionStorage.setItem("UserID",JSON.stringify(res))
                 this.router.navigate(['Infopage/', idNumber])
               }

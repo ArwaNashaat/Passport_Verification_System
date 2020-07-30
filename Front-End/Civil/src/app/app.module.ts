@@ -10,12 +10,13 @@ import { CreateuserComponent } from './createuser/createuser.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CapturePhotoComponent } from './capture-photo/capture-photo.component';
 import {ShareImageService} from './services/share-image.service';
-
+import { RenewUserComponent } from './renew-user/renew-user.component';
 
 const appRoutes: Routes = [
 
   { path: 'Infopage/:ID', component: InfoPageComponent },
   { path: 'CreateUser', component: CreateuserComponent },
+  { path: 'RenewUser', component: RenewUserComponent },
   { path: '', component: CapturePhotoComponent}
   
 ];
@@ -26,7 +27,8 @@ const appRoutes: Routes = [
     InfoPageComponent,
     NavbarComponent,
     CreateuserComponent,
-    CapturePhotoComponent
+    CapturePhotoComponent,
+    RenewUserComponent
   ],
   imports: [
     BrowserModule,

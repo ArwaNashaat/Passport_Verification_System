@@ -11,7 +11,7 @@ export class RestService {
 
   Loading = false
   InvalidID_Name = false;
-  idNumber: String
+  idNumber: string
 
   constructor(private http: HttpClient , private router : Router , private sharedImage : ShareImageService) {
 

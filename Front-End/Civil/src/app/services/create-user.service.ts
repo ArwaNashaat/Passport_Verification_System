@@ -40,4 +40,31 @@ export class CreateUserService {
     });
     return promise;
   }
+  
+  renewUser(newID: ID) {
+    this.Loading = true
+    let promise = new Promise((resolve, reject) => {
+
+      this.http.post(`http://localhost:8080/Airport/renewID_Civil`, newID)
+        .toPromise()
+        .then(
+          res => {
+            try {
+              resolve(res); 
+              this.idNumber = res.toString()
+              this.Loading = false
+            }
+            catch (e) {
+              reject(false);
+            }
+          },
+          msg => {
+            this.InvalidID_Name = true;
+            this.Loading = false
+            reject(msg);
+          }
+        );
+    });
+    return promise;
+  }
 }
