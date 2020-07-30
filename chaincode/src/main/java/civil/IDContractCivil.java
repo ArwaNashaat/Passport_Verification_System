@@ -2,6 +2,7 @@ package civil;
 
 import civilHome.ID;
 import civilHome.IDContractHome;
+import airport.VerifyID;
 import com.owlike.genson.Genson;
 
 import org.hyperledger.fabric.contract.Context;
@@ -16,7 +17,7 @@ import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
 import java.time.LocalDate;
-import java.util.StringTokenizer;
+
 
 @Contract(
         name = "IDContractAtCivil",
@@ -42,10 +43,6 @@ public class IDContractCivil implements ContractInterface {
         EXPIRED_ID
     }
 
-    @Transaction()
-    public void initLedger(final Context ctx) {
-    }
-
 
     private LocalDate setExpireDate(){
 
@@ -61,8 +58,7 @@ public class IDContractCivil implements ContractInterface {
             return true;
         return false;
     }
-//["22","Arwa Nashaat Serry Abdl","Female", "Islam", "SW", "Single", "05-11-1998","cc"]
-//["Amira Nashaat Serry Abdl","Islam", "Female", "05-11-1998", "Giza", "Egyptian","49","49"]
+
     @Transaction()
     public ID issueID(final Context ctx, final String address, final String fullName,
                       final String gender, final String religion, final String job, final String maritalStatus,
@@ -93,13 +89,12 @@ public class IDContractCivil implements ContractInterface {
         return id;
     }
 
-
     private void checkIDExist(String idState, String IDNumber){
 
-        if (!idState.isEmpty()) {
-            String errorMessage = String.format("ID %s already exists", IDNumber);
+        if (idState.isEmpty()) {
+            String errorMessage = String.format("ID %s doesn't exists", IDNumber);
             System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
+            throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
         }
     }
 

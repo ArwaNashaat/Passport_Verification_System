@@ -1,4 +1,5 @@
 package civilHome;
+import airport.VerifyID;
 import civil.IDBuilder;
 import civil.IDDirector;
 import com.owlike.genson.Genson;
@@ -15,7 +16,10 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 
+import java.net.IDN;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Contract(
         name = "IDContractFromHome",
@@ -34,7 +38,7 @@ import java.time.LocalDate;
 public class IDContractHome implements ContractInterface {
 
     private final Genson genson = new Genson();
-
+    private final VerifyID idHistory = new VerifyID();
     public enum IDErrors {
         ID_NOT_FOUND,
         ID_ALREADY_EXISTS
@@ -74,55 +78,21 @@ public class IDContractHome implements ContractInterface {
         return id;
     }
 
-    /*@Transaction()
-    public ID issueID(final Context ctx/*, final String IDNumber*//*,final String job, final String maritalStatus,
-                      final String personalPic, final String parentIDNumber){
-        ChaincodeStub stub = ctx.getStub();
-
-        ID parentID = getID(ctx,parentIDNumber);
-
-        BirthCertificateContract birthCertificateContract = new BirthCertificateContract();
-        ArrayList<BirthCertificate> birthCertificate = new ArrayList<>();
-        birthCertificate = birthCertificateContract.getBirthCertByParentID(ctx,parentIDNumber);//.getBirthCertificate(ctx,IDNumber);
-
-        String IDNumber = birthCertificate.get(0).getIdNumber();
-
-        String idState = stub.getStringState(IDNumber);
-        if (!idState.isEmpty()) {
-            String errorMessage = String.format("ID %s already exists", IDNumber);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, IDErrors.ID_ALREADY_EXISTS.toString());
-        }
-
-        LocalDate expireDate = setExpireDate();
-        IDBuilder builder = new IDBuilder();
-        IDDirector IDCreator = new IDDirector(builder);
-        IDCreator.construct(birthCertificate.get(0), parentID.getAddress(),job, maritalStatus, String.valueOf(expireDate), personalPic);
-        ID id = IDCreator.getID();
-
-        idState = genson.serialize(id);
-        stub.putStringState(IDNumber, idState);
-
-        return id;
-    }
-*/
-
     @Transaction
-    public ID getID(final Context ctx, final String IDNumber) {
+    public ID[] getID(final Context ctx, final String IDNumber) {
         ChaincodeStub stub = ctx.getStub();
 
-        String idState = stub.getStringState(IDNumber);
-        if (idState.isEmpty()) {
+        ID[] ids = idHistory.getIDHistory(ctx, IDNumber);
+
+        if (ids.length==0) {
             String errorMessage = String.format("ID %s does not exist", IDNumber);
-            System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, IDErrors.ID_NOT_FOUND.toString());
         }
 
-        ID id = genson.deserialize(idState, ID.class);
-        boolean isExpired = isExpired(LocalDate.parse(id.getExpireDate()));
+        boolean isExpired = isExpired(LocalDate.parse(ids[0].getExpireDate()));
 
-        ID newID = updateIfExpired(stub,id, isExpired);
-        return newID;
+        ids[0] = updateIfExpired(stub,ids[0], isExpired);
+        return ids;
     }
 
     @Transaction
@@ -149,7 +119,7 @@ public class IDContractHome implements ContractInterface {
 
     @Transaction
     public String getPicturePath(final Context ctx, final String IDNumber) {
-        ID id = getID(ctx, IDNumber);
+        ID id = getID(ctx, IDNumber)[0];
 
         return id.getPersonalPicture();
     }

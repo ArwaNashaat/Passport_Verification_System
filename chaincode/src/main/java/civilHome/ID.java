@@ -43,8 +43,6 @@ public  class ID {
     private  boolean isExpired;
     @Property()
     private  String personalPicture;
-    @Property()
-    private ArrayList<String> childrenIDs;
 
     public ID() {
     }
@@ -72,9 +70,8 @@ public  class ID {
         this.expireDate = expireDate;
         this.isExpired = isExpired;
         this.personalPicture = personalPicture;
-
-        this.childrenIDs = new ArrayList<>();
     }
+
     public void setIDNumber(String IDNumber) {
         this.IDNumber = IDNumber;
     }
@@ -135,13 +132,7 @@ public  class ID {
     public String getExpireDate(){ return expireDate;}
     public boolean getIsExpired(){ return isExpired;}
     public String getPersonalPicture(){ return personalPicture;}
-    public ArrayList<String> getChildrenIDs() {
-        return this.childrenIDs;
-    }
-    public void setChildrenIDs(ArrayList<String> childrenAges) {
-        this.childrenIDs = childrenAges;
-    }
-    public void addChild(String childID){ this.childrenIDs.add(childID); }
+
 
     public void validateID(){
         ValidateInfo validateInfo = new ValidateInfo();
@@ -165,12 +156,12 @@ public  class ID {
         ID other = (ID) obj;
 
         return Objects.deepEquals(new String[] {getIDNumber(), getAddress(), getFullName(), getGender(),
-                         getReligion(), getJob(),getMaritalStatus(), getNationality(), String.valueOf(getDateOfBirth()),
-                String.valueOf(getExpireDate()), String.valueOf(getIsExpired()), getPersonalPicture(), getChildrenIDs().toString()},
+                         getReligion(), /*getJob(),getMaritalStatus(),*/ getNationality(), String.valueOf(getDateOfBirth()),
+                /*String.valueOf(getExpireDate()),*/ String.valueOf(getIsExpired()), getPersonalPicture()},
                 new String[] {other.getIDNumber(), other.getAddress(), other.getFullName(), other.getGender(),
-              	other.getReligion(), other.getJob(), other.getMaritalStatus(), other.getNationality(),
-                        String.valueOf(other.getDateOfBirth()), String.valueOf(other.getExpireDate()),
-                        String.valueOf(other.getIsExpired()), other.getPersonalPicture(), other.getChildrenIDs().toString()});
+              	other.getReligion(), /*other.getJob(), other.getMaritalStatus(),*/ other.getNationality(),
+                        String.valueOf(other.getDateOfBirth()), /*String.valueOf(other.getExpireDate()),*/
+                        String.valueOf(other.getIsExpired()), other.getPersonalPicture()});
     }
 
     @Override
@@ -179,6 +170,6 @@ public  class ID {
                 ", fullName=" + fullName + ", gender=" + gender  + ", religion=" + religion +
                 ", job=" + job + ", maritalStatus=" + maritalStatus + ", nationality=" + nationality +
                 ", dateOfBirth="+dateOfBirth + ", expireDate=" + expireDate + ", ID Expired=" + isExpired +
-                ", personalPicture" + personalPicture+ ", childrenIDs=" + childrenIDs +"]";
+                ", personalPicture" + personalPicture+"]";
     }
 }

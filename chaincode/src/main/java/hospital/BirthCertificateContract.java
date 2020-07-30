@@ -50,7 +50,7 @@ public class BirthCertificateContract implements ContractInterface{
     @Transaction()
     public void initLedger(final Context ctx) {
     }
-    //["Amira Nashaat Serry abd","Islam","Female", "05-11-1998", "Giza","Egyptian","23","23"]
+
     @Transaction()
     public BirthCertificate issueBirthCertificate(final Context ctx, final String fullName, final String religion,
                                                 final String gender, final String dateOfBirth,
@@ -82,24 +82,6 @@ public class BirthCertificateContract implements ContractInterface{
         return newBirthCertificate;
 
     }
-
-    /*@Transaction
-    public BirthCertificate getBirthCertificate(final Context ctx, String IDNumber) {
-        ChaincodeStub stub = ctx.getStub();
-        //getIDByNumber();
-        IDNumber += "birthCert";
-
-        String birthCertificateState = stub.getStringState(IDNumber);
-        if(birthCertificateState.isEmpty()) {
-            String errorMessage = String.format("Birth Certificate %s doesn't exist", IDNumber);
-            System.out.println(errorMessage);
-            throw new ChaincodeException(errorMessage, BirthCertificateErrors.BirthCertificate_NOT_FOUND.toString());
-        }
-
-        BirthCertificate birthCertificate = genson.deserialize(birthCertificateState, BirthCertificate.class);
-        return birthCertificate;
-
-    }*/
 
     @Transaction
     public ID getIDByName(final Context ctx, String name){
