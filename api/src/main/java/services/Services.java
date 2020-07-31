@@ -24,6 +24,24 @@ public class Services {
     Genson genson = new Genson();
     String picturePath = System.getenv("PICTURE_PATH");
 
+    public String renewID_Civil(String currentID, String address, String fullName, String religion, String job, String maritalStatus) throws IOException{
+        ConfigurationComponent configurationComponent = new ConfigurationComponent();
+        Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();
+
+        try (Gateway gateway = gatewayConfig) {
+
+            Contract contract = configurationComponent.getContract(gateway, "IDContractAtCivil");
+
+            contract.submitTransaction("renewID", currentID,address, fullName,religion,job, maritalStatus);
+
+            return currentID;
+
+        } catch (ContractException | TimeoutException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String renewID(String currentID, String job, String maritalStatus) throws IOException{
         ConfigurationComponent configurationComponent = new ConfigurationComponent();
         Gateway gatewayConfig = configurationComponent.setupGatewayConfigurations();

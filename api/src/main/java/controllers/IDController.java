@@ -1,6 +1,7 @@
 package controllers;
 
 import chaincodes.BirthCertificate;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import components.ConfigurationComponent;
 import org.hyperledger.fabric.gateway.*;
@@ -14,6 +15,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.TimeoutException;
 
 
@@ -49,6 +51,19 @@ public class IDController {
 
         Services services = new Services();
         return services.renewID(currentID, job, maritalStatus);
+    }
+
+    //final String address, final String fullName,
+//                      final String religion, final String job, final String maritalStatus
+
+    @CrossOrigin(origins = {"http://localhost:4400", "http://localhost:4200"})
+    @PostMapping(value="/Airport/renewID_Civil", consumes= MediaType.APPLICATION_JSON_VALUE)
+    public String renewID_Civil(@RequestBody ID id) throws IOException {
+        System.out.println(id);
+
+        Services services = new Services();
+        return services.renewID_Civil(id.getIDNumber(),id.getAddress(), id.getFullName(),id.getReligion()
+                , id.getJob(), id.getMaritalStatus());
     }
 
 }

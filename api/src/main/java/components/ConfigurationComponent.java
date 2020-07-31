@@ -16,8 +16,7 @@ public class ConfigurationComponent {
     private final String chaincodeId = "Chaincode";
 
     public Gateway setupGatewayConfigurations() throws IOException {
-        System.out.println(walletPathString);
-        System.out.println(networkConfigPathString);
+
         Path walletPath = Paths.get(walletPathString);
         Wallet wallet = Wallet.createFileSystemWallet(walletPath);
 
